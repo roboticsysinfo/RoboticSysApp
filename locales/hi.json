@@ -1,0 +1,32 @@
+{
+    
+    "welcome": "ऐप में आपका स्वागत है",
+    "select_language": "भाषा चुनें",
+
+    "Login": "लॉग इन करें",
+    "Enter Phone Number": "फ़ोन नंबर दर्ज करें",
+    "Send OTP": "ओटीपी भेजें",
+
+    "Dont have an account?": "क्या आपके पास खाता नहीं है?",
+    "Register Here": "यहाँ पंजीकरण करें",
+    "Farmer Registration": "किसान पंजीकरण",
+    "Already have an account?": "क्या आपका खाता है?",
+    "Email": "ईमेल",
+    "Full Name": "पूरा नाम",
+    "Login here": "यहां लॉगिन करें",
+    "Upload Aadhar Card": "आधार कार्ड अपलोड करें",
+    "Address": "पता",
+    "Password": "पासवर्ड",
+    "Registering": "पंजीकरण कर रहे हैं...",
+    "Register": "पंजीकरण करें",
+
+    "Cannot Find Phone Number, Please Use Another Number" :"फ़ोन नंबर नहीं मिला, कृपया कोई अन्य नंबर उपयोग करें।",
+    "Please enter a valid phone number" :"कृपया एक वैध फ़ोन नंबर दर्ज करें।",
+
+    "Phone Verification": "फ़ोन सत्यापन",
+    "Enter 4 digit verification code sent to your phone number": "आपके फोन नंबर पर भेजा गया 4 अंकों का सत्यापन कोड दर्ज करें",
+    "Verify OTP": "ओटीपी सत्यापित करें"
+
+
+
+}
