@@ -10,8 +10,6 @@ const api = axios.create({
   },
 });
 
-console.log("Base URL API", REACT_APP_API_BASE_URL)
-
 // Interceptor to attach token automatically
 api.interceptors.request.use(
   async (config) => {

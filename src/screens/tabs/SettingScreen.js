@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { Avatar, Text, List, Button } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import FIcon from "react-native-vector-icons/FontAwesome6";
@@ -9,7 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 
 
 const SettingScreen = () => {
-  
+
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -18,7 +18,7 @@ const SettingScreen = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser()); // Dispatch logout action
-    navigation.replace("Login"); // Redirect to login
+    navigation.navigate("Login"); // Redirect to login
   };
 
   return (
@@ -37,7 +37,9 @@ const SettingScreen = () => {
           <Text style={styles.name}>{user ? user.name : "N/A"}</Text>
         </View>
 
-        <Icon name="pencil" size={20} color="green" style={styles.editIcon} />
+        <TouchableOpacity onPress={() => { navigation.navigate('Profile') }}>
+          <Icon name="pencil" size={20} color="green" style={styles.editIcon} />
+        </TouchableOpacity>
 
       </View>
 
@@ -50,24 +52,44 @@ const SettingScreen = () => {
             title="Orders"
             left={() => <Icon name="shopping" size={24} />}
             right={() => <Icon name="chevron-right" size={24} />}
-            onPress={() => { navigation.replace('My Orders') }}
+            onPress={() => { navigation.navigate('My Orders') }}
           />
-
-          <List.Item title="My Details" left={() => <Icon name="card-account-details" size={24} />} right={() => <Icon name="chevron-right" size={24} />} onPress={() => { }} />
-
-          <List.Item title="Delivery Preference" left={() => <Icon name="map-marker" size={24} />} right={() => <Icon name="chevron-right" size={24} />} onPress={() => { }} />
 
           <List.Item
-            title="Notifications"
-            left={() => <Icon name="bell" size={24} />}
+            title="My Details"
+            left={() => <Icon name="card-account-details" size={24} />}
             right={() => <Icon name="chevron-right" size={24} />}
-            onPress={() => { navigation.replace('Notifications') }}
+            onPress={() => { navigation.navigate('Profile') }}
+          />
+
+          <List.Item
+            title="Delivery Preference"
+            left={() => <Icon name="map-marker" size={24} />}
+            right={() => <Icon name="chevron-right" size={24} />}
+            onPress={() => { navigation.navigate('Delivery Preference') }}
           />
 
 
-          <List.Item title="Change Language" left={() => <FIcon name="language" size={24} />} right={() => <Icon name="chevron-right" size={24} />}
-            onPress={() => { navigation.replace('Select Language') }} />
+          <List.Item
+            title="Change Language"
+            left={() => <FIcon name="language" size={24} />}
+            right={() => <Icon name="chevron-right" size={24} />}
+            onPress={() => { navigation.navigate('Select Language') }}
+          />
 
+          <List.Item
+            title="Help & Support"
+            left={() => <Icon name="help-circle" size={22} />}
+            right={() => <Icon name="chevron-right" size={22} />}
+            onPress={() => { navigation.navigate('Contact') }}
+          />
+
+          <List.Item
+            title="Earn & Refer"
+            left={() => <FIcon name="money-bill-1" size={22} />}
+            right={() => <Icon name="chevron-right" size={22} />}
+            onPress={() => { navigation.navigate('EarnAndRefer') }}
+          />
 
         </List.Section>
 
@@ -118,8 +140,8 @@ const styles = StyleSheet.create({
   logoutButton: {
     marginHorizontal: 20,
     marginTop: 20,
-    borderRadius: 5,
-    backgroundColor: '#8B0000',
+    borderRadius: 4,
+    backgroundColor: '#DA2428',
     marginBottom: 20,
   },
   settingListContainer: {

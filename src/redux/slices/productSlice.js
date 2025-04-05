@@ -70,7 +70,6 @@ const productSlice = createSlice({
       })
 
       .addCase(getProductById.fulfilled, (state, action) => {
-        console.log("Updating Redux store with product:", action.payload);
         state.product = action.payload;  // Ensure this gets updated correctly
         state.status = 'succeeded';
       })

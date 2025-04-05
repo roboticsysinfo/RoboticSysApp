@@ -1,16 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
 
+
 // Define async thunks for API calls
 export const fetchCategories = createAsyncThunk('categories/fetchCategories', async () => {
   const response = await  api.get('/categories');
   return response.data;
 });
 
+
 export const fetchCategoryById = createAsyncThunk('categories/fetchCategoryById', async (id) => {
   const response = await  api.get(`/category/${id}`);
   return response.data;
 });
+
 
 // Initial state
 const initialState = {

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, ToastAndroid } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert, ToastAndroid } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { approveOrderRequest, cancelOrderRequest, getOrderRequestByFarmerId } from '../../redux/slices/orderSlice';
@@ -6,34 +6,60 @@ import { ActivityIndicator, Button, Card } from 'react-native-paper';
 import { COLORS } from '../../../theme';
 import moment from 'moment';
 
+
+
 const OrdersScreen = () => {
+  
+  const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
   const { requests: orders, loading, error } = useSelector((state) => state.requestOrder);
   const { user } = useSelector((state) => state.auth);
-
   const farmerId = user?.id;
 
-  console.log("orders", orders);
+  const loadOrders = async () => {
+    setRefreshing(true);
+    await dispatch(getOrderRequestByFarmerId(farmerId));
+    setRefreshing(false);
+  };
 
   useEffect(() => {
     if (farmerId) {
-      dispatch(getOrderRequestByFarmerId(farmerId));
+      loadOrders();
     }
-  }, [dispatch, farmerId]);
+  }, [farmerId]);
+
+  const renderOrder = ({ item, index }) => <OrderCard key={item?._id || index} order={item} />;
 
   return (
-    <ScrollView>
+
+    <View style={{ flex: 1 }}>
+
       {loading && <ActivityIndicator style={styles.loading} size="large" color={COLORS.primaryColor} />}
-      {error && <Text style={styles.error}>Error fetching Order: {error?.message || JSON.stringify(error)}</Text>}
-      {orders?.length === 0 && <Text style={styles.noOrders}>No orders found</Text>}
 
-      {orders?.map((order, index) => (
-        <OrderCard key={order?._id || index} order={order} />
-      ))}
+      {error && orders?.length === 0 && (
+        <Text style={styles.error}>
+          {typeof error === 'string'
+            ? `Error: ${error}`
+            : 'Something went wrong while fetching orders.'}
+        </Text>
+      )}
 
-    </ScrollView>
+      {orders?.length === 0 && !loading ? (
+        <Text style={styles.noOrders}>No orders found</Text>
+      ) : (
+        <FlatList
+          data={[...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))}
+          keyExtractor={(item, index) => item?._id?.toString() || index.toString()}
+          renderItem={renderOrder}
+          refreshing={refreshing}
+          onRefresh={loadOrders}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
+      )}
+    </View>
   );
 };
+
 
 // OrderCard Component
 const OrderCard = ({ order }) => {
@@ -61,16 +87,16 @@ const OrderCard = ({ order }) => {
 
   const handleApprovedOrder = (orderId) => {
     Alert.alert(
-      "Confirm Approval", 
-      "Are you sure you want to accept this order?", 
+      "Confirm Approval",
+      "Are you sure you want to accept this order?",
       [
         {
           text: "No",
           onPress: () => console.log("Order approval cancelled"),
           style: "cancel"
         },
-        { 
-          text: "Yes", 
+        {
+          text: "Yes",
           onPress: () => {
             dispatch(approveOrderRequest(orderId));
             ToastAndroid.show("Order Approved Successfully!", ToastAndroid.SHORT);
@@ -79,19 +105,19 @@ const OrderCard = ({ order }) => {
       ]
     );
   };
-  
+
   const handleCancelOrder = (orderId) => {
     Alert.alert(
-      "Confirm Cancellation", 
-      "Are you sure you want to cancel this order?", 
+      "Confirm Cancellation",
+      "Are you sure you want to cancel this order?",
       [
         {
           text: "No",
           onPress: () => console.log("Order cancellation cancelled"),
           style: "cancel"
         },
-        { 
-          text: "Yes", 
+        {
+          text: "Yes",
           onPress: () => {
             dispatch(cancelOrderRequest(orderId));
             ToastAndroid.show("Order Cancelled Successfully!", ToastAndroid.SHORT);
@@ -112,24 +138,35 @@ const OrderCard = ({ order }) => {
         <Text style={styles.productName}>Product: {order?.product_id?.name || "Unknown"}</Text>
 
         <Text style={[styles.status, getStatusStyle(order?.status)]}>
-            Status: {order?.status || "Pending"}
+          Status: {order?.status || "Pending"}
         </Text>
 
         <Text style={styles.priceText}>Price Per Unit: ₹{order?.product_id?.price_per_unit || "0"} | Unit: ₹{order?.product_id?.unit || "N/A"}</Text>
 
         <Text style={styles.dateTime}>Date: {formattedDate}</Text>
 
-        <View style={styles.buttonContainer}>
-          <Button mode="contained" onPress={() => handleApprovedOrder(order?._id)} style={[styles.button, styles.approveBtn]}>
-            Approve
-          </Button>
-          <Button mode="outlined" onPress={() => handleCancelOrder(order?._id)} style={[styles.button, styles.declineBtn]}>
-            <Text style={styles.declineBtntext}>Cancel</Text>
-          </Button>
-        </View>
+        {order?.status?.toLowerCase() === "pending" && (
+          <View style={styles.buttonContainer}>
+            <Button
+              mode="contained"
+              onPress={() => handleApprovedOrder(order?._id)}
+              style={[styles.button, styles.approveBtn]}
+            >
+              Approve
+            </Button>
+            <Button
+              mode="outlined"
+              onPress={() => handleCancelOrder(order?._id)}
+              style={[styles.button, styles.declineBtn]}
+            >
+              <Text style={styles.declineBtntext}>Cancel</Text>
+            </Button>
+          </View>
+        )}
+
 
         <TouchableOpacity onPress={toggleDropdown} style={styles.toggleButton}>
-            <Text style={styles.toggleButtonText}>{isDropdownVisible ? "Hide Details" : "Show More"}</Text>
+          <Text style={styles.toggleButtonText}>{isDropdownVisible ? "Hide Details" : "Show More"}</Text>
         </TouchableOpacity>
 
         {isDropdownVisible && (
@@ -154,7 +191,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     backgroundColor: "#fff"
   },
-  priceText:{
+  priceText: {
     fontSize: 14,
     marginTop: 10,
     fontWeight: "bold"

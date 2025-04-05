@@ -11,17 +11,22 @@ import SettingScreen from "../screens/tabs/SettingScreen";
 import ShopScreen from "../screens/tabs/ShopScreen"; // My Shop
 import CreateShopScreen from "../screens/CreateShopScreen";
 
+
 const Tab = createBottomTabNavigator();
 
+
 const TabNavigator = ({ userId }) => {
+
 
    const dispatch = useDispatch();
    const { shop, status } = useSelector(state => state.shop);
    const [shopExists, setShopExists] = useState(null);
 
+
    useEffect(() => {
       dispatch(fetchShopById(userId));
    }, [dispatch, userId]);
+
 
    useEffect(() => {
       if (status === "succeeded") {
@@ -29,9 +34,11 @@ const TabNavigator = ({ userId }) => {
       }
    }, [shop, status]);
 
+
    return (
       <Tab.Navigator
          screenOptions={({ route }) => ({
+
             tabBarIcon: ({ focused, color, size }) => {
                let iconName;
                if (route.name === "Home") {
@@ -48,12 +55,19 @@ const TabNavigator = ({ userId }) => {
                return <Icon name={iconName} size={size} color={color} />;
             },
             tabBarStyle: {
-               backgroundColor: "#f8f9fa",
-               borderTopWidth: 2,
-               elevation: 5,
+               backgroundColor: "#fff",
+               elevation: 3,
+               height: 60,
+               paddingVertical: 5, 
             },
-            tabBarActiveTintColor: COLORS.primaryColor,
-            tabBarInactiveTintColor: "gray",
+            tabBarIconStyle: {
+               marginBottom: 0,
+               marginTop: 5
+            },
+            tabBarActiveTintColor: "#fff",
+            tabBarActiveBackgroundColor: COLORS.secondaryColor,
+            tabBarInactiveTintColor: COLORS.primaryColor,
+            tabBarLabelPosition: "below-icon",
             headerShown: false,
          })}
       >

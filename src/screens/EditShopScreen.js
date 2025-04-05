@@ -67,21 +67,6 @@ const EditShopScreen = ({ route }) => {
             .catch(error => console.error("Error fetching states:", error));
     }, []);
 
-    // Function to pick Aadhar card image
-    const pickAadharCard = async () => {
-        const options = { mediaType: "photo", quality: 1 };
-        launchImageLibrary(options, (response) => {
-            if (response.didCancel) {
-                console.log("User cancelled image picker");
-            } else if (response.error) {
-                console.log("Image selection error:", response.error);
-            } else {
-                setAadharCardImage(response.assets[0]);
-            }
-        });
-    };
-
-
     const handleStateChange = (selectedState) => {
 
         setFormData(prevState => ({ ...prevState, state: selectedState, city_district: '' }));

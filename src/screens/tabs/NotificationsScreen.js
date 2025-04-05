@@ -1,12 +1,151 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { View, FlatList, StyleSheet, Image } from "react-native";
+import { Text, List } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import noNotification from "../../assets/no_notification.jpg";
+import { fetchNotifications, markNotificationAsRead } from "../../redux/slices/notificationSlice";
+import moment from "moment";
 
 const NotificationsScreen = () => {
-  return (
-    <View>
-      <Text>NotificationsScreen</Text>
-    </View>
-  )
-}
 
-export default NotificationsScreen
+
+  const dispatch = useDispatch();
+  const notifications = useSelector((state) => state.notifications.items);
+  const [refreshing, setRefreshing] = useState(false);
+
+
+  const loadNotifications = async () => {
+    setRefreshing(true);
+    await dispatch(fetchNotifications());
+    setRefreshing(false);
+  };
+
+
+  useEffect(() => {
+    loadNotifications();
+  }, []);
+
+
+  return (
+    <View style={styles.container}>
+
+      {notifications.length === 0 ? (
+
+        <View style={styles.emptyContainer}>
+          <Image source={noNotification} style={styles.image} />
+          <Text style={styles.emptyTitle}>No Notifications</Text>
+          <Text style={styles.emptySubtitle}>
+            We’ll let you know when there will be something to update you.
+          </Text>
+        </View>
+
+      ) : (
+
+        <FlatList
+
+          data={notifications}
+
+          keyExtractor={(item) =>
+            item._id ? item._id.toString() : Math.random().toString()
+          }
+
+          renderItem={({ item }) => (
+
+            <List.Item
+              onPress={() => {
+                if (!item.read) {
+                  dispatch(markNotificationAsRead(item._id));
+                }
+              }}
+              style={[
+                styles.notificationList,
+                { backgroundColor: item.read ? "#fff" : "#f0f0f0" }, // ⬅️ bg change
+              ]}
+              title={`From: ${item.userName}`}
+              titleStyle={styles.title}
+              description={item.message}
+              descriptionStyle={styles.description}
+              left={() => (
+                <Image
+                  source={{
+                    uri: item.profileImage || "https://avatar.iran.liara.run/public/boy",
+                  }}
+                  style={styles.avatar}
+                />
+              )}
+              right={() => (
+                <Text style={styles.time}>
+                  {moment(item.createdAt).fromNow()}
+                </Text>
+              )}
+            />
+            
+          )}
+
+
+          refreshing={refreshing}
+          onRefresh={loadNotifications}
+        />
+      )}
+    </View>
+  );
+};
+
+
+export default NotificationsScreen;
+
+
+const styles = StyleSheet.create({
+
+  container: { flex: 1, backgroundColor: "#fff", padding: 16 },
+
+  emptyContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+
+  image: { width: 150, height: 100, marginBottom: 16 },
+
+  emptyTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 8 },
+
+  emptySubtitle: { fontSize: 14, color: "gray", textAlign: "center", paddingHorizontal: 40 },
+
+  // Title (User Name) Styling
+
+  title: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333"
+  },
+
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 8,
+  },
+
+
+  // Description (Message) Styling
+  description: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 10,
+    width: 200,
+    lineHeight: 20
+  },
+
+  // Time Styling
+  time: {
+    fontSize: 12,
+    color: "gray"
+  },
+
+  // Notification Item Styling
+  notificationList: {
+    borderBottomWidth: 1,
+    borderColor: "#efefef",
+    paddingVertical: 8,
+    borderRadius: 8,
+    marginBottom: 4
+  }
+
+
+});

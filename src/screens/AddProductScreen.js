@@ -37,6 +37,7 @@ const AddProductScreen = () => {
         const options = { mediaType: 'photo', quality: 1 };
         launchImageLibrary(options, (response) => {
             if (!response.didCancel && !response.error) {
+                
                 setFormData(prev => ({ ...prev, product_image: response.assets[0].uri }));
             }
         });
@@ -72,6 +73,7 @@ const AddProductScreen = () => {
 
     return (
         <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
+            
             <TextInput
                 mode='outlined'
                 label="Product Name"

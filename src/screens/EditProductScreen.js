@@ -52,7 +52,6 @@ const EditProductScreen = ({ route }) => {
                 product_image: product?.product_image || null,
             });
     
-            console.log("Selected Category ID:", selectedCategory?._id);
         }
     }, [product, categories]);
     
@@ -139,7 +138,6 @@ const EditProductScreen = ({ route }) => {
                 valueField="value"
                 placeholder="Select Category"
                 onChange={item => {
-                    console.log("Selected Category:", item); // Debugging ke liye
                     setFormData(prev => ({ ...prev, category_id: item.value }));
                 }}
             />

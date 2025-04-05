@@ -22,10 +22,16 @@ const SelectLang = () => {
         i18n.changeLanguage(language);
     }, [language]);
 
-
-
     return (
         <>
+
+            <View style={styles.topRightWrapper}>
+                <Text style={styles.goHomeText} onPress={() => navigation.replace('Dashboard')}>
+                    Go to Home
+                </Text>
+            </View>
+
+
             <View style={styles.container}>
                 <Text style={styles.title}>{t('welcome')}</Text>
                 <Button mode="outlined" style={styles.button} onPress={() => dispatch(setLanguage('en'))} >
@@ -41,7 +47,7 @@ const SelectLang = () => {
                     onPress={async () => {
                         const token = await AsyncStorage.getItem("token"); // Check if user is logged in
                         if (token) {
-                            navigation.replace('Home'); // If logged in, go to Home
+                            navigation.replace('Dashboard'); // If logged in, go to Home
                         } else {
                             navigation.replace('Login'); // If not logged in, go to Login
                         }
@@ -57,6 +63,7 @@ const SelectLang = () => {
 };
 
 const styles = StyleSheet.create({
+    
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -64,22 +71,26 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: 20,
     },
+
     title: {
         fontSize: 22,
         fontWeight: 'bold',
         marginBottom: 5,
         color: COLORS.lightBlack
     },
+
     subtitle: {
         fontSize: 18,
         marginBottom: 20,
 
     },
+
     button: {
         marginVertical: 10,
         width: 200,
         color: COLORS.primaryColor
     },
+
     nextButton: {
         marginTop: 30,
         width: 200,
@@ -88,6 +99,22 @@ const styles = StyleSheet.create({
         color: '#fff',
         backgroundColor: COLORS.primaryColor
     },
+
+    topRightWrapper: {
+        position: 'absolute',
+        top: 50,
+        right: 30,
+        zIndex: 999,
+    },
+
+    goHomeText: {
+        color: COLORS.primaryColor, // make sure this is a visible color
+        fontSize: 16,
+        fontWeight: '700',
+        textDecorationLine: "underline"
+    },
+
+
 });
 
 export default SelectLang;

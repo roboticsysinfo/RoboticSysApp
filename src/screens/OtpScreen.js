@@ -55,7 +55,7 @@ const OtpScreen = ({ route }) => {
           await AsyncStorage.setItem("token", result.payload.token);
           await AsyncStorage.setItem("farmer", JSON.stringify(result.payload.farmer)); // Fix here
   
-          navigation.replace("Home");
+          navigation.replace("Dashboard");
         } catch (error) {
           console.error("AsyncStorage Error:", error);
         }

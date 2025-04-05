@@ -8,6 +8,7 @@ import { COLORS } from '../../../theme';
 import FIcon from "react-native-vector-icons/FontAwesome6";
 
 const MyProducts = () => {
+  
   const dispatch = useDispatch();
   const navigation = useNavigation();
 

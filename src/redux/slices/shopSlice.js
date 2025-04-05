@@ -2,6 +2,26 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
 
 
+// Thunks for fetching data
+export const fetchShops = createAsyncThunk(
+  'shop/fetchShops',
+  async ({ page, limit }, { rejectWithValue }) => {
+    try {
+
+      const response = await api.get("/farmer-shops", { params: { page, limit } });
+
+      console.log("shop redux api response", response.data.data)
+
+      return response.data.data || [];
+        // Assuming the shops are inside the 'data' array
+    } catch (error) {
+
+      return rejectWithValue(error.message);  // Handle errors
+    }
+  }
+);
+
+
 // Get Shop by Farmer Id
 export const fetchShopById = createAsyncThunk(
   'shop/fetchShopById',
@@ -38,6 +58,7 @@ export const createShop = createAsyncThunk(
     }
   }
 );
+
 
 // Update shop
 export const updateShop = createAsyncThunk(
@@ -94,6 +115,18 @@ const shopSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
+    builder
+      .addCase(fetchShops.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchShops.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.shops = action.payload || [];  // Ensure payload is valid
+      })
+      .addCase(fetchShops.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload; // Handle errors from rejected action
+      });
 
     // Fetch shop by ID
     builder
