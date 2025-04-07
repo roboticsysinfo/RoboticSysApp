@@ -6,57 +6,29 @@ import { persistor } from "../store";
 
 // Register Farmer
 export const registerFarmer = createAsyncThunk(
-  "auth/registerFarmer",
-  async (farmerData, { rejectWithValue }) => {
+  'farmer/registerFarmer',
+  async (formData, { rejectWithValue }) => {
     try {
-      if (!farmerData || typeof farmerData !== "object") {
-        throw new Error("Invalid farmerData: Expected an object.");
-      }
-
-      const formData = new FormData();
-
-      Object.keys(farmerData).forEach((key) => {
-        if (key === "aadharCardImage" && farmerData[key]) {
-          formData.append("uploadAadharCard", {
-            uri: farmerData.aadharCardImage.uri.replace("file://", ""),
-            type: farmerData.aadharCardImage.type || "image/jpeg",
-            name: farmerData.aadharCardImage.fileName || "aadhar.jpg",
-          });
-        }else {
-          formData.append(key, farmerData[key]);
-        }
-      });
-
-      console.log("📦 FormData is ready to be sent!");
-
-      // ✅ Debugging: Check if formData is correctly created
-      console.log("Is formData an instance of FormData?", formData instanceof FormData);
-      console.log("typeof formData:", typeof formData);
-
-      // ✅ Instead of `entries()`, try alternative debugging
-      console.log("FormData Content:");
-      for (const pair of formData._parts) {
-        console.log(pair[0] + ":", pair[1]);
-      }
-
-      const response = await api.post("/farmer/register", formData, {
+      const config = {
         headers: {
-          "Content-Type": "multipart/form-data",
-          "Accept": "application/json",
+          'Content-Type': 'multipart/form-data',
         },
-      });
+      };
 
-      console.log("✅ API Response:", response.data);
+      const response = await api.post(
+        '/farmer/register', // Change to your actual endpoint
+        formData,
+        config
+      );
+
       return response.data;
-
     } catch (error) {
-      console.error("❌ Registration API Error:", error.response?.data || error.message);
-      return rejectWithValue(error.response?.data || { message: "Registration failed" });
+      return rejectWithValue(
+        error.response?.data?.message || 'Something went wrong'
+      );
     }
   }
 );
-
-
 
 // Get Farmer by ID (Separate state for farmer details)
 export const getFarmerById = createAsyncThunk(
@@ -104,6 +76,7 @@ export const loginWithOTP = createAsyncThunk("auth/loginWithOTP", async ({ phone
   }
 });
 
+
 // Logout action to clear storage
 export const logoutUser = () => async (dispatch) => {
   try {
@@ -115,6 +88,7 @@ export const logoutUser = () => async (dispatch) => {
     console.error("Logout Error:", error);
   }
 };
+
 
 const authSlice = createSlice({
   name: "auth",
@@ -143,20 +117,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Register Farmer
-      .addCase(registerFarmer.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(registerFarmer.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload.farmer; // ✅ New user data store
-      })
-      .addCase(registerFarmer.rejected, (state, action) => {
-        state.loading = false;
-        console.log("❌ Register Farmer Error:", action.payload);
-        state.error = action.payload?.message || "Registration failed";
-      })
 
       // Get Farmer by ID (Separating from user)
       .addCase(getFarmerById.pending, (state) => {
@@ -214,6 +174,21 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload?.message || "Login failed";
       })
+    // Register Farmer
+    .addCase(registerFarmer.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(registerFarmer.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload.farmer;
+      state.token = action.payload.token;
+    })
+    .addCase(registerFarmer.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload || "Registration failed";
+    });
+
   },
 });
 

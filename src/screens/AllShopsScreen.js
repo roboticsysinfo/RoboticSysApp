@@ -1,18 +1,25 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet, Image, ScrollView } from 'react-native';
-import { Text, Card, Button, ActivityIndicator } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Image, ScrollView, TextInput } from 'react-native';
+import { Text, Card, Button, ActivityIndicator, Avatar } from 'react-native-paper';
 import FIcon from "react-native-vector-icons/FontAwesome6";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { fetchShops } from '../redux/slices/shopSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from '../../theme';
+import api from '../services/api';
+import { REACT_APP_BASE_URI } from '@env';
+
 
 const AllShopsScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const { shops = [], status, error } = useSelector((state) => state.shop);
     const { reviews, averageRating } = useSelector(state => state.reviews);
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredShops, setFilteredShops] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const totalReviews = reviews.length;
     const rating = parseFloat(averageRating) || 0;
@@ -21,16 +28,41 @@ const AllShopsScreen = () => {
         dispatch(fetchShops({ page: 1, limit: 10 }));
     }, [dispatch]);
 
-    if (status === 'loading') return <ActivityIndicator size="small" color={COLORS.primaryColor} />;
+    useEffect(() => {
+        searchShops(); // Load all shops by default
+    }, []);
+
+
+    if (status === 'loading') return <ActivityIndicator style={{ marginTop: 60 }} size="large" color={COLORS.secondaryColor} />;
     if (status === 'failed') {
         return <Text>Error: {error?.message || 'An error occurred'}</Text>;
     }
 
-    console.log("total reviews", totalReviews)
-    console.log("rating", rating)
+    const searchShops = async () => {
+        setLoading(true);
+        try {
+            const res = await api.get(`/shop/search?keyword=${searchQuery}`);
+            setFilteredShops(res.data);
+        } catch (error) {
+            console.error("Search error:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
+
+            <TextInput
+                placeholder="Search by shop name or city..."
+                value={searchQuery}
+                onChangeText={text => setSearchQuery(text)}
+                onSubmitEditing={searchShops}
+                style={styles.searchInput}
+            />
+
+
 
             {shops.length === 0 ? (
 
@@ -44,13 +76,16 @@ const AllShopsScreen = () => {
                     const rating = shop.averageRating ? parseFloat(shop.averageRating).toFixed(1) : "0.0";
                     const totalReviews = shop.totalReviews || 0;
 
+                    const shopProfileImage = shop.shop_profile_image
+                        ? `${REACT_APP_BASE_URI}/${shop.shop_profile_image.replace(/\\/g, '/')}` // fix Windows-style paths
+                        : 'https://via.placeholder.com/100';
+
                     return (
                         <Card key={shop._id} style={styles.card}>
                             <View style={styles.row}>
-                                <Image
-                                    source={{ uri: shop.shop_profile_image || 'https://via.placeholder.com/80' }}
-                                    style={styles.image}
-                                />
+
+                                <Avatar.Image size={80} source={{ uri: shopProfileImage }} style={styles.image} />
+
 
                                 <View style={styles.info}>
                                     <Text style={styles.shopName}>{shop.shop_name}</Text>
@@ -74,7 +109,8 @@ const AllShopsScreen = () => {
 
                                     <Button
                                         mode="contained"
-                                        onPress={() => navigation.navigate("Shop Details", shop._id)}
+                                        onPress={() => navigation.navigate("Shop Details", { shopId: shop._id })}
+
                                         labelStyle={{ fontSize: 12 }}
                                         style={styles.button}
                                     >
@@ -113,14 +149,17 @@ const styles = StyleSheet.create({
         width: 80,
         height: 80,
         borderRadius: 8,
-        backgroundColor: '#ccc',
+        backgroundColor: '#fff',
         marginRight: 12,
+        resizeMode: "contain",
+        borderWidth: 1,
+        borderColor: "#efefef"
     },
     info: {
         flex: 1,
     },
     shopName: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 6,
     },
@@ -134,12 +173,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#333',
     },
-
     location: {
         flexDirection: 'row',
         alignItems: 'center',
     },
-
     rating: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -156,7 +193,6 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         paddingVertical: 0
     },
-
     emptyContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -167,6 +203,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#888',
         textAlign: 'center',
+    },
+    searchInput: {
+        backgroundColor: '#fff',
+        padding: 10,
+        borderRadius: 8,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#ddd',
     },
 
 

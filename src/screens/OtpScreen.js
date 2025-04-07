@@ -66,19 +66,17 @@ const OtpScreen = ({ route }) => {
   };
   
   
-
-
-
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.replace('Login')}>
         <Text style={styles.backText}>←</Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>Phone Verification</Text>
+      <Text style={styles.title}>OTP Verification</Text>
       <Text style={styles.subtitle}>Enter 4 digit verification code sent to your phone number</Text>
 
       <View style={styles.otpContainer}>
+        
         {otp.map((digit, index) => (
           <TextInput
             key={index}
@@ -91,6 +89,7 @@ const OtpScreen = ({ route }) => {
             ref={(el) => (inputs.current[index] = el)}
           />
         ))}
+
       </View>
 
       {loading ? (
@@ -101,7 +100,8 @@ const OtpScreen = ({ route }) => {
         </TouchableOpacity>
       )}
 
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && <Text style={{fontWeight: 600, marginTop: 20}}>{error}</Text>}
+
     </View>
   );
 };
@@ -145,11 +145,11 @@ const styles = StyleSheet.create({
   otpInput: {
     width: 50,
     height: 50,
-    borderWidth: 1,
+    borderBottomWidth: 1,
     borderColor: '#444',
     backgroundColor: '#fff',
     color: '#333',
-    borderRadius: 4,
+    borderRadius: 0,
     textAlign: 'center',
     fontSize: 24,
     marginHorizontal: 8,
@@ -162,10 +162,13 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 60,
     borderRadius: 4,
+    width: "90%",
+    textAlign: "center"
   },
   verifyButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+    textAlign: "center"
   },
 });

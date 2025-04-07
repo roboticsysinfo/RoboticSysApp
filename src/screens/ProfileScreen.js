@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
-import { TextInput, Button, Text, Card, ActivityIndicator, Snackbar } from 'react-native-paper';
+import { TextInput, Button, Text, Card, ActivityIndicator, Snackbar, Divider } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFarmerById, updateFarmerById } from '../redux/slices/authSlice';
 
@@ -48,8 +48,12 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       <Card style={styles.card}>
-        <Card.Title title="Farmer Profile" />
+        <Card.Title />
         <Card.Content>
+          <Text style={{fontWeight: "bold", marginBottom: 5}} >Registration Number</Text>
+          <Text style={{marginBottom: 10, fontSize: 16, fontWeight: "bold"}}>{farmerDetails.registrationNumber}</Text>
+
+          <Divider style={{marginVertical: 10}} />
 
           <TextInput mode='outlined' style={styles.textInput} label="Name" value={form.name} onChangeText={(text) => handleChange('name', text)} />
           

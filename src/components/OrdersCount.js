@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { Card, Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { COLORS } from '../../theme';
+import appLogo from "../assets/kg-logo.jpg"
 
 const OrdersCounts = () => {
-    
+
     // Assuming your orders slice is named "requestOrder" and contains an array "orders"
     const { requests: orders, loading, error } = useSelector((state) => state.requestOrder);
 
@@ -17,7 +18,14 @@ const OrdersCounts = () => {
     return (
 
         <View style={styles.ordersInfocontainer}>
-            
+
+            {/* Background Logo */}
+            <Image
+                source={appLogo} // ✅ Update with your logo path
+                style={styles.backgroundLogo}
+                resizeMode="contain"
+            />
+
             <Card style={styles.card}>
                 <Card.Content>
                     <Text style={styles.title}>Pending Orders</Text>
@@ -46,13 +54,26 @@ const OrdersCounts = () => {
 
 const styles = StyleSheet.create({
 
-    ordersInfocontainer: {
+    backgroundLogo: {
+        ...StyleSheet.absoluteFillObject,
+        opacity: 0.2,
+        zIndex: -1,
+        alignSelf: 'center',
+        justifyContent: "center",
+        width: '100%', // Adjust size as needed
+        height: '100%',
+        left: 15,
+        top: 30
+      },
+      ordersInfocontainer: {
         padding: 20,
         flexDirection: "row",
-        justifyContent: 'start',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         flexWrap: "wrap",
-    },
+        position: 'relative', // Important to allow absolute image behind
+      },
+      
     card: {
         width: 150,
         marginVertical: 5,
@@ -68,7 +89,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
     },
-    pending: {color: 'orange'},
+    pending: { color: 'orange' },
     cancelled: { color: 'red' },
     accepted: { color: 'green' },
     count: {

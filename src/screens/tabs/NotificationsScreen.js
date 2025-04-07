@@ -5,11 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import noNotification from "../../assets/no_notification.jpg";
 import { fetchNotifications, markNotificationAsRead } from "../../redux/slices/notificationSlice";
 import moment from "moment";
+import { useNavigation } from "@react-navigation/native";
 
 const NotificationsScreen = () => {
 
 
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const notifications = useSelector((state) => state.notifications.items);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -56,6 +58,13 @@ const NotificationsScreen = () => {
                 if (!item.read) {
                   dispatch(markNotificationAsRead(item._id));
                 }
+
+                // Navigate based on type
+                if (item.type === "order") {
+                  navigation.navigate("Orders", { orderId: item.orderId });
+                } else if (item.type === "review") {
+                  navigation.navigate("My Shop Reviews", { reviewId: item.reviewId });
+                }
               }}
               style={[
                 styles.notificationList,
@@ -79,7 +88,7 @@ const NotificationsScreen = () => {
                 </Text>
               )}
             />
-            
+
           )}
 
 

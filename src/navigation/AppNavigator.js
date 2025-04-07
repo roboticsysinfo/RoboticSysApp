@@ -22,6 +22,10 @@ import ShopReviewsScreen from '../screens/ShopReviewsScreen';
 import HelpSupportScreen from "../screens/HelpSupportScreen"
 import ShopDetailsScreen from '../screens/ShopDetailsScreen';
 import AllShopsScreen from '../screens/AllShopsScreen';
+import OrdersScreen from '../screens/tabs/OrdersScreen';
+import KYCPendingScreen from '../screens/KYCPendingScreen';
+import ReferAndEarnScreen from '../screens/ReferAndEarnScreen';
+import { navigationRef } from '../services/navigationService';
 
 
 const Stack = createStackNavigator();
@@ -75,7 +79,7 @@ const AppNavigator = () => {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
 
       <Stack.Navigator initialRouteName={isLoggedIn ? 'Dashboard' : isLanguageSet ? 'Login' : 'Select Language'}>
 
@@ -96,9 +100,13 @@ const AppNavigator = () => {
         <Stack.Screen name="My Shop Reviews" component={ShopReviewsScreen} options={{ headerShown: true }} />
         <Stack.Screen name="Contact" component={HelpSupportScreen} options={{ headerShown: true }} />
 
-        <Stack.Screen name="All Shops" component={AllShopsScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="Shop Detail" component={ShopDetailsScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="KYC Pending" component={KYCPendingScreen} options={{ headerShown: false }} />
 
+        <Stack.Screen name="All Shops" component={AllShopsScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Shop Details" component={ShopDetailsScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Orders" component={OrdersScreen} />
+
+        <Stack.Screen name="ReferandEarn" component={ReferAndEarnScreen} options={{ headerShown: false }}/>
 
 
       </Stack.Navigator>
