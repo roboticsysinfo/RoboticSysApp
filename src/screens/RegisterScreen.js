@@ -12,11 +12,16 @@ import {
   TouchableOpacity,
 } from "react-native";
 import appLogo from "../../src/assets/kg-logo.jpg";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const RegisterScreen = () => {
+
+
+  const route = useRoute();
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
+  const referralFromParams = route.params?.ref || "";  //  Get referral code for auto fill
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -25,7 +30,9 @@ const RegisterScreen = () => {
   const [aadharCard, setAadharCard] = useState("");
   const [password, setPassword] = useState("");
   const [aadharImage, setAadharImage] = useState(null);
+  const [referralCode, setReferralCode] = useState(referralFromParams); // Auto-fill
   const [loading, setLoading] = useState(false);
+
 
   const handlePickImage = () => {
     ImagePicker.launchImageLibrary({ mediaType: "photo" }, (response) => {
@@ -50,6 +57,7 @@ const RegisterScreen = () => {
     formData.append("phoneNumber", phoneNumber);
     formData.append("address", address);
     formData.append("aadharCard", aadharCard);
+    formData.append("referralCode", referralCode);
     formData.append("uploadAadharCard", {
       uri: aadharImage.uri,
       type: aadharImage.type || "image/jpeg",
@@ -121,6 +129,14 @@ const RegisterScreen = () => {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+        style={styles.input}
+      />
+
+      <TextInput
+        label="Referral Code (optional)"
+        mode="outlined"
+        value={referralCode}
+        onChangeText={setReferralCode}
         style={styles.input}
       />
 

@@ -4,6 +4,7 @@ import { store, persistor } from "./src/redux/store";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { DefaultTheme, PaperProvider } from "react-native-paper";
 import { COLORS } from "./theme";
+import Toast from 'react-native-toast-message';
 
 const theme = {
   ...DefaultTheme,
@@ -24,6 +25,7 @@ export default function App() {
       <PersistGate loading={null} persistor={persistor}>
         <PaperProvider theme={theme}>
           <AppNavigator />
+          <Toast />
         </PaperProvider>
       </PersistGate>
     </Provider>

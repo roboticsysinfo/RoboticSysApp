@@ -18,13 +18,14 @@ import AdminMessagesScreen from "../../components/AdminMessage";
 
 const HomeScreen = () => {
 
-  const { user } = useSelector((state) => state.auth);
+  const { user, farmerDetails } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const { shop, status } = useSelector(state => state.shop);
   const [shopExists, setShopExists] = useState(null);
 
   const farmerId = user?.id;
+  const points = farmerDetails?.points;
 
   const unreadCount = useSelector((state) => state.notifications.unreadCount);
   // Drawer ka state
@@ -72,6 +73,23 @@ const HomeScreen = () => {
             <Text style={styles.subText}>Welcome,</Text>
             <Text style={styles.nameText}>{user ? user.name : "N/A"}</Text>
           </View>
+        </View>
+
+        <View style={styles.walletWrapper}>
+          <TouchableOpacity style={styles.walletButton} onPress={() => navigation.navigate('Notifications')}>
+            <FIcon name="wallet" size={28} color="black" />
+            {points > 0 && (
+              <Badge style={{ 
+                position: "absolute", 
+                top: -20, right: -10, 
+                fontSize: 12, padding: 0, width: 40, height: 25, 
+                borderRadius: 100,
+                backgroundColor: "#f39c12"
+              }}>
+                {points}
+              </Badge>
+            )}
+          </TouchableOpacity>
         </View>
 
         <View style={styles.notificationWrapper}>

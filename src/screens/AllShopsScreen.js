@@ -12,6 +12,7 @@ import { REACT_APP_BASE_URI } from '@env';
 
 
 const AllShopsScreen = () => {
+
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const { shops = [], status, error } = useSelector((state) => state.shop);
@@ -24,19 +25,6 @@ const AllShopsScreen = () => {
     const totalReviews = reviews.length;
     const rating = parseFloat(averageRating) || 0;
 
-    useEffect(() => {
-        dispatch(fetchShops({ page: 1, limit: 10 }));
-    }, [dispatch]);
-
-    useEffect(() => {
-        searchShops(); // Load all shops by default
-    }, []);
-
-
-    if (status === 'loading') return <ActivityIndicator style={{ marginTop: 60 }} size="large" color={COLORS.secondaryColor} />;
-    if (status === 'failed') {
-        return <Text>Error: {error?.message || 'An error occurred'}</Text>;
-    }
 
     const searchShops = async () => {
         setLoading(true);
@@ -49,6 +37,24 @@ const AllShopsScreen = () => {
             setLoading(false);
         }
     };
+
+    
+    useEffect(() => {
+        dispatch(fetchShops({ page: 1, limit: 10 }));
+    }, [dispatch]);
+
+
+    useEffect(() => {
+        searchShops(); // Load all shops by default
+    }, []);
+
+
+    if (status === 'loading') return <ActivityIndicator style={{ marginTop: 60 }} size="large" color={COLORS.secondaryColor} />;
+    if (status === 'failed') {
+        return <Text>Error: {error?.message || 'An error occurred'}</Text>;
+    }
+
+
 
 
     return (
