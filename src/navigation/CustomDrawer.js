@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    Image,
+    TouchableWithoutFeedback,
+} from "react-native";
 import appLogo from "../../src/assets/kg-logo.jpg";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -10,147 +17,143 @@ import { logoutUser } from "../redux/slices/authSlice";
 import { useDispatch } from "react-redux";
 
 const CustomDrawer = ({ isOpen, closeDrawer }) => {
-    if (!isOpen) return null; // Agar drawer open nahi hai toh kuch bhi return mat karo
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
 
-    const dispatch = useDispatch()
-    const navigation = useNavigation()
+    if (!isOpen) return null;
 
     const handleLogout = () => {
-        dispatch(logoutUser()); // Dispatch logout action
-        navigation.navigate("Login"); // Redirect to login
+        dispatch(logoutUser());
+        navigation.navigate("Login");
     };
 
     return (
-        <View style={styles.drawerContainer}>
+        <View style={styles.overlayContainer}>
+            {/* Tappable transparent area to close drawer */}
+            <TouchableWithoutFeedback onPress={closeDrawer}>
+                <View style={styles.backdrop} />
+            </TouchableWithoutFeedback>
 
-            {/* 🔹 Header Section with Logo & Close Button */}
+            {/* Actual Drawer */}
+            <View style={styles.drawerContainer}>
+                <View style={styles.header}>
+                    <Image source={appLogo} style={styles.logo} />
+                    <TouchableOpacity onPress={closeDrawer} style={styles.closeButton}>
+                        <Text style={styles.closeText}>✕</Text>
+                    </TouchableOpacity>
+                </View>
 
-            <View style={styles.header}>
+                <Divider />
 
-                {/* Logo Image */}
+                <ScrollView style={styles.settingListContainer}>
+                    <List.Section>
+                        <List.Item
+                            title="Orders"
+                            left={() => <Icon name="shopping" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate("Orders")}
+                        />
 
-                <Image
-                    source={appLogo}
-                    style={styles.logo}
-                />
+                        <List.Item
+                            title="All Shops"
+                            left={() => <Icon name="storefront" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate("All Shops")}
+                        />
 
-                {/* Close Button */}
-                <TouchableOpacity onPress={closeDrawer} style={styles.closeButton}>
-                    <Text style={styles.closeText}>✕</Text>
-                </TouchableOpacity>
+                        <List.Item
+                            title="My Products"
+                            left={() => <Icon name="archive-plus" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate("My Products")}
+                        />
 
+                        <List.Item
+                            title="My Details"
+                            left={() => <Icon name="card-account-details" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate("My Details")}
+                        />
+
+                        <List.Item
+                            title="My Shop Reviews"
+                            left={() => <Icon name="storefront" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate("My Shop Reviews")}
+                        />
+
+                        <List.Item
+                            title="Delivery Preference"
+                            left={() => <Icon name="map-marker" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate("Delivery Preference")}
+                        />
+
+                        <List.Item
+                            title="Help & Support"
+                            left={() => <Icon name="help-circle" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate("Contact")}
+                        />
+
+                        <List.Item
+                            title="Refer & Earn"
+                            left={() => <FIcon name="money-bill-1" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate("ReferandEarn")}
+                        />
+
+                        <List.Item
+                            title="Change Language"
+                            left={() => <FIcon name="language" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate("Select Language")}
+                        />
+                    </List.Section>
+
+                    <Button
+                        mode="contained"
+                        onPress={handleLogout}
+                        style={styles.logoutButton}
+                        icon="logout"
+                    >
+                        Log Out
+                    </Button>
+                </ScrollView>
             </View>
-
-            <Divider />
-
-            {/* Drawer Menu */}
-            {/* Options List */}
-            <ScrollView style={styles.settingListContainer}>
-
-                <List.Section>
-
-                    <List.Item
-                        title="Orders"
-                        left={() => <Icon name="shopping" size={22} />}
-                        right={() => <Icon name="chevron-right" size={22} />}
-                        onPress={() => { navigation.navigate('Orders') }}
-                    />
-
-                    <List.Item
-                        title="All Shops"
-                        left={() => <Icon name="storefront" size={22} />}
-                        right={() => <Icon name="chevron-right" size={22} />}
-                        onPress={() => { navigation.navigate('All Shops') }}
-                    />
-
-                    <List.Item
-                        title="My Products"
-                        left={() => <Icon name="archive-plus" size={22} />}
-                        right={() => <Icon name="chevron-right" size={22} />}
-                        onPress={() => { navigation.navigate('My Products') }}
-                    />
-
-                    <List.Item
-                        title="My Details"
-                        left={() => <Icon name="card-account-details" size={22} />}
-                        right={() => <Icon name="chevron-right" size={22} />}
-                        onPress={() => { navigation.navigate('My Details') }}
-                    />
-
-                    <List.Item
-                        title="My Shop Reviews"
-                        left={() => <Icon name="storefront" size={22} />}
-                        right={() => <Icon name="chevron-right" size={22} />}
-                        onPress={() => { navigation.navigate('My Shop Reviews') }}
-                    />
-
-                    <List.Item
-                        title="Delivery Preference"
-                        left={() => <Icon name="map-marker"
-                            size={22} />}
-                        right={() => <Icon name="chevron-right" size={22} />}
-                        onPress={() => { navigation.navigate('Delivery Preference') }}
-                    />
-
-                    <List.Item
-                        title="Help & Support"
-                        left={() => <Icon name="help-circle" size={22} />}
-                        right={() => <Icon name="chevron-right" size={22} />}
-                        onPress={() => { navigation.navigate('Contact') }}
-                    />
-
-                    <List.Item
-                        title="Refer & Earn"
-                        left={() => <FIcon name="money-bill-1" size={22} />}
-                        right={() => <Icon name="chevron-right" size={22} />}
-                        onPress={() => { navigation.navigate('ReferandEarn') }}
-                    />
-
-                    <List.Item
-                        title="Change Language"
-                        left={() => <FIcon name="language" size={22} />}
-                        right={() => <Icon name="chevron-right" size={22} />}
-                        onPress={() => { navigation.navigate('Select Language') }}
-                    />
-
-                </List.Section>
-
-                {/* Logout Button */}
-                <Button
-                    mode="contained"
-                    onPress={handleLogout}
-                    style={styles.logoutButton}
-                    icon="logout"
-                >
-                    Log Out
-                </Button>
-
-            </ScrollView>
-
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    drawerContainer: {
+    overlayContainer: {
         position: "absolute",
         top: 0,
         left: 0,
+        width: "100%",
+        height: "100%",
+        flexDirection: "row-reverse", // ← Changed from 'row' to 'row-reverse'
+        zIndex: 999,
+    },
+    backdrop: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.3)", // Darken background
+    },
+    drawerContainer: {
         width: 300,
         height: "100%",
         backgroundColor: "white",
         padding: 20,
         shadowColor: "#000",
         shadowOpacity: 0.5,
-        shadowOffset: { width: 2, height: 2 },
+        shadowOffset: { width: -2, height: 2 },
         elevation: 5,
-        zIndex: 1024
+        zIndex: 1024,
     },
-    // 🔹 Header styling with row alignment
     header: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between", // Space between logo & close button
+        justifyContent: "space-between",
         marginBottom: 20,
     },
     logo: {
@@ -165,14 +168,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
     },
-    drawerText: {
-        fontSize: 14,
-    },
     logoutButton: {
         marginRight: 30,
         marginTop: 20,
         borderRadius: 4,
-        backgroundColor: '#DA2428',
+        backgroundColor: "#DA2428",
         marginBottom: 20,
     },
 });

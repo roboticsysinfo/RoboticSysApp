@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Toast from 'react-native-toast-message';
 import { getFarmerById } from '../redux/slices/authSlice';
+import { fetchRedeemProducts } from '../redux/slices/redeemProductSlice';
+import RedeemProducts from '../components/RedeemProducts';
 
 
 const ReferAndEarnScreen = () => {
@@ -18,8 +20,10 @@ const ReferAndEarnScreen = () => {
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  
+
   const { user, farmerDetails, loading, error } = useSelector((state) => state.auth);
+  const { rproducts } = useSelector((state) => state.redeemProducts);
+
 
   const userId = user?.id;
 
@@ -33,6 +37,10 @@ const ReferAndEarnScreen = () => {
       }
     }, [dispatch, userId])
   );
+
+  useEffect(() => {
+    dispatch(fetchRedeemProducts());
+  }, [dispatch]);
 
 
   // Copy Referral Code
@@ -133,31 +141,12 @@ const ReferAndEarnScreen = () => {
 
       {/* Rewards Section */}
       <Text style={styles.rewardHeader}>Popular in Reward </Text>
-      <Text style={{fontSize: 18, paddingHorizontal: 16, fontWeight: "bold", color: "#f39c12"}}>Redeem Exciting Produts with points</Text>
+      <Text style={{ fontSize: 18, paddingHorizontal: 16, fontWeight: "bold", color: "#f39c12" }}>Redeem Exciting Products with points</Text>
 
-      <View style={styles.rewardList}>
-        {[1, 2, 3, 4].map((_, index) => (
-          <Card key={index} style={styles.rewardCard}>
-            <Image
-              source={sampleProductImage}
-              style={styles.rewardImage}
-            />
-            <Text style={styles.rewardTitle}>Service parts</Text>
+        <RedeemProducts />
 
-            <Divider />
-
-            <Button
-              mode="contained"
-              compact
-              style={styles.useBtn}
-              labelStyle={{ fontSize: 12 }}
-            >
-              Use 🪙 200Pts
-            </Button>
-          </Card>
-        ))}
-      </View>
     </ScrollView>
+
   );
 };
 
@@ -273,41 +262,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#f39c12',
   },
-  rewardList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    paddingBottom: 20,
-  },
-  rewardCard: {
-    width: '44%',
-    marginTop: 12,
-    padding: 20,
-    borderRadius: 16,
-    flexDirection: "column",
-    alignItems: 'center',
-    justifyContent: "center",
-    backgroundColor: "#fff"
-  },
-  rewardImage: {
-    width: 60,
-    height: 60,
-    resizeMode: 'contain',
-  },
-  rewardTitle: {
-    fontWeight: '600',
-    marginTop: 8,
-    fontSize: 14
-  },
-  rewardDesc: {
-    color: '#555',
-    fontSize: 12,
-  },
-  useBtn: {
-    marginTop: 12,
-    backgroundColor: COLORS.secondaryColor,
-    width: 120
-  },
+
   shareContainer: {
     marginTop: 20,
     alignItems: 'center',

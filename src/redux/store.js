@@ -8,15 +8,19 @@ import categoryReducer from "../redux/slices/categorySlice";
 import deliveryPreferenceReducer from "../redux/slices/deliveryPreferenceSlice";
 import notificationsReducer from "../redux/slices/notificationSlice"
 import reviewReducer from "../redux/slices/reviewSlice"
-import adminReducer from "../redux/slices/adminSlice"
+import adminReducer from "../redux/slices/adminSlice";
+import redeemProductsReducer from "../redux/slices/redeemProductSlice"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { persistStore, persistReducer } from "redux-persist";
+
+
 
 // 🔹 Persist Config
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
 };
+
 
 // 🔹 Wrap Reducers with PersistReducer
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
@@ -32,7 +36,8 @@ const store = configureStore({
     deliveryPreference: deliveryPreferenceReducer,
     notifications: notificationsReducer,
     reviews: reviewReducer,
-    adminData: adminReducer
+    adminData: adminReducer,
+    redeemProducts: redeemProductsReducer
   },
   devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>

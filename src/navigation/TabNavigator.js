@@ -15,6 +15,7 @@ import CreateShopScreen from "../screens/CreateShopScreen";
 const Tab = createBottomTabNavigator();
 
 
+
 const TabNavigator = ({ userId }) => {
 
 
@@ -22,18 +23,15 @@ const TabNavigator = ({ userId }) => {
    const { shop, status } = useSelector(state => state.shop);
    const [shopExists, setShopExists] = useState(null);
 
-
    useEffect(() => {
       dispatch(fetchShopById(userId));
    }, [dispatch, userId]);
-
 
    useEffect(() => {
       if (status === "succeeded") {
          setShopExists(!!shop); // True if shop exists, false otherwise
       }
    }, [shop, status]);
-
 
    return (
       <Tab.Navigator
@@ -73,7 +71,7 @@ const TabNavigator = ({ userId }) => {
       >
          <Tab.Screen name="Home" component={HomeScreen} />
          <Tab.Screen name="Orders" component={OrdersScreen} options={{ headerShown: true }} />
-         <Tab.Screen name="My Products" component={MyProducts} options={{ headerShown: true }} />
+         <Tab.Screen name="My Products" component={MyProducts} options={{ headerShown: false }} />
 
          {/* Shop Screen (Dynamically Rendered) */}
          {shopExists ? (
@@ -84,6 +82,7 @@ const TabNavigator = ({ userId }) => {
 
          <Tab.Screen name="Settings" component={SettingScreen} />
       </Tab.Navigator>
+      
    );
 };
 

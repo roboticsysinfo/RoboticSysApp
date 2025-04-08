@@ -1,24 +1,61 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Image, Text, FlatList, ActivityIndicator, Alert, ToastAndroid } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductByFarmerId, deleteProduct } from '../../redux/slices/productSlice';
 import { Card, Button, IconButton, Divider } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { COLORS } from '../../../theme';
 import FIcon from "react-native-vector-icons/FontAwesome6";
+import CustomHeader from '../../components/CustomHeader';
+import CustomDrawer from '../../navigation/CustomDrawer';
+import { fetchNotifications } from '../../redux/slices/notificationSlice';
+import { getOrderRequestByFarmerId } from '../../redux/slices/orderSlice';
 
 const MyProducts = () => {
-  
+
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   // Fetching products and status from Redux
   const { products, status, error } = useSelector((state) => state.products);
-  const { user } = useSelector((state) => state.auth);
+  const { user, farmerDetails } = useSelector((state) => state.auth);
+  const { shop, } = useSelector(state => state.shop);
+  const [shopExists, setShopExists] = useState(null);
+
+  const points = farmerDetails?.points;
+
+  const unreadCount = useSelector((state) => state.notifications.unreadCount);
+  // Drawer ka state
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+
+  useFocusEffect(
+
+    useCallback(() => {
+      dispatch(fetchNotifications());
+
+      if (farmerId) {
+        dispatch(getOrderRequestByFarmerId(farmerId));
+      }
+    }, [dispatch, farmerId])
+
+  );
+
+  useEffect(() => {
+    if (status === "succeeded") {
+      setShopExists(!!shop); // True if shop exists, false otherwise
+    }
+  }, [shop, status]);
+
 
   const farmerId = user?.id;
 
   const productId = products?._id
+
+  // Toggle function
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
 
   useEffect(() => {
     if (farmerId) {
@@ -52,73 +89,89 @@ const MyProducts = () => {
   const renderedProducts = Array.isArray(products) ? products : [products];
 
   return (
-    <View style={styles.container}>
 
-      <Button
-        mode="contained"
-        style={styles.addProductBtn}
-        contentStyle={styles.buttonContent} 
-        onPress={() => navigation.navigate('Add New Product')}
-      >
-        <View style={styles.buttonInner}>
-          <FIcon name="cart-plus" size={24} color="white" style={styles.icon} />
-          <Text style={styles.buttonText}>Add New Product</Text>
-        </View>
-      </Button>
+    <>
 
+      {/* ✅ Header */}
+      < CustomHeader
+        toggleDrawer={toggleDrawer}
+        user={user}
+        points={points}
+        unreadCount={unreadCount}
+      />
 
-      <Divider style={{ color: "#000", backgroundColor: "#000", marginBottom: 10 }} />
+      {/* ✅ Drawer */}
+      <CustomDrawer isOpen={isDrawerOpen} closeDrawer={toggleDrawer} />
 
-      {/* Handle Loading and Error States */}
-      {status === "loading" && <ActivityIndicator size="large" color="#0000ff" />}
-      {status === "failed" && <Text>Error fetching Products: {error?.message || JSON.stringify(error)}</Text>
-      }
+      <View style={styles.container}>
 
-      {/* Handle "No products found" case */}
-      {status === "succeeded" && renderedProducts.length === 0 && (
-        <Text>No products found</Text>
-      )}
+        <Button
+          mode="contained"
+          style={styles.addProductBtn}
+          contentStyle={styles.buttonContent}
+          onPress={() => navigation.navigate('Add New Product')}
+        >
+          <View style={styles.buttonInner}>
+            <FIcon name="cart-plus" size={24} color="white" style={styles.icon} />
+            <Text style={styles.buttonText}>Add New Product</Text>
+          </View>
+        </Button>
 
-      {/* Use FlatList to render products */}
-      {status === "succeeded" && renderedProducts.length > 0 && (
-        <FlatList
-          data={renderedProducts}
-          keyExtractor={(item) => item._id.toString()}
-          renderItem={({ item, index }) => (
-            <Card key={item._id || index} style={styles.card}>
-              <View style={styles.row}>
+        <Divider style={{ color: "#000", backgroundColor: "#000", marginBottom: 10 }} />
 
-                <View style={styles.badgeContainer}>
-                  <Text style={styles.badge}>{String(index + 1).padStart(2, '0')}</Text>
-                </View>
+        {/* Handle Loading and Error States */}
+        {status === "loading" && <ActivityIndicator size="large" color="#0000ff" />}
+        {status === "failed" && <Text>Error fetching Products: {error?.message || JSON.stringify(error)}</Text>
+        }
 
-                <View style={styles.infoContainer}>
-                  <Text style={styles.category}>{item.category_id?.name}</Text>
-                  <Text style={styles.title}>{item.name}</Text>
-                  <View style={styles.actionRow}>
-                    <Button
-                      mode="contained" style={styles.editbtn}
-                      onPress={() => navigation.navigate('Edit Product', { productId: item._id })}
-                    >
-                      Edit
-                    </Button>
-                    <IconButton icon="delete" onPress={() => handleDelete(item._id)} />
+        {/* Handle "No products found" case */}
+        {status === "succeeded" && renderedProducts.length === 0 && (
+          <Text>No products found</Text>
+        )}
+
+        {/* Use FlatList to render products */}
+        {status === "succeeded" && renderedProducts.length > 0 && (
+          <FlatList
+            data={renderedProducts}
+            keyExtractor={(item) => item._id.toString()}
+            renderItem={({ item, index }) => (
+              <Card key={item._id || index} style={styles.card}>
+                <View style={styles.row}>
+
+                  <View style={styles.badgeContainer}>
+                    <Text style={styles.badge}>{String(index + 1).padStart(2, '0')}</Text>
                   </View>
+
+                  <View style={styles.infoContainer}>
+                    <Text style={styles.category}>{item.category_id?.name}</Text>
+                    <Text style={styles.title}>{item.name}</Text>
+                    <View style={styles.actionRow}>
+                      <Button
+                        mode="contained" style={styles.editbtn}
+                        onPress={() => navigation.navigate('Edit Product', { productId: item._id })}
+                      >
+                        Edit
+                      </Button>
+                      <IconButton icon="delete" onPress={() => handleDelete(item._id)} />
+                    </View>
+                  </View>
+
+                  <Image
+                    source={{ uri: `https://kisaangrowth-backend.onrender.com/${item.product_image}` || 'https://via.placeholder.com/150' }} // Fallback image
+                    style={styles.image}
+                  />
+
                 </View>
+              </Card>
+            )}
+            contentContainerStyle={styles.scrollContainer}
+          />
+        )}
+      </View>
 
-                <Image
-                  source={{ uri: `https://kisaangrowth-backend.onrender.com/${item.product_image}` || 'https://via.placeholder.com/150' }} // Fallback image
-                  style={styles.image}
-                />
+    </>
 
 
-              </View>
-            </Card>
-          )}
-          contentContainerStyle={styles.scrollContainer}
-        />
-      )}
-    </View>
   );
 };
 
@@ -134,7 +187,7 @@ const styles = {
   title: { fontWeight: 'bold', fontSize: 16 },
   actionRow: { flexDirection: 'row', alignItems: "center", marginTop: 10 },
   image: { width: 80, height: 80, borderRadius: 5, borderWidth: 1, borderColor: "#000", resizeMode: 'cover', },
-  editbtn: { backgroundColor: COLORS.primaryColor, marginBottom: 0, padding: 0, color: "#fff", fontSize: 12,  },
+  editbtn: { backgroundColor: COLORS.primaryColor, marginBottom: 0, padding: 0, color: "#fff", fontSize: 12, },
   addProductBtn: {
     borderRadius: 4,
     marginVertical: 10,

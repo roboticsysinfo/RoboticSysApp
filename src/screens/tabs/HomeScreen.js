@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, TouchableOpacity , ScrollView} from "react-native";
+import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Avatar, Button, Card, Divider, Text, Badge } from "react-native-paper";
 import { COLORS } from "../../../theme";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +14,8 @@ import { fetchNotifications } from '../../redux/slices/notificationSlice';
 import { fetchShopById } from "../../redux/slices/shopSlice";
 import { getOrderRequestByFarmerId } from "../../redux/slices/orderSlice";
 import AdminMessagesScreen from "../../components/AdminMessage";
+import CustomHeader from "../../components/CustomHeader";
+import { getFarmerById } from "../../redux/slices/authSlice";
 
 
 const HomeScreen = () => {
@@ -33,17 +35,15 @@ const HomeScreen = () => {
 
 
   useFocusEffect(
-
     useCallback(() => {
       dispatch(fetchNotifications());
-
+      dispatch(getFarmerById());
       if (farmerId) {
         dispatch(getOrderRequestByFarmerId(farmerId));
       }
     }, [dispatch, farmerId])
 
   );
-
 
   useEffect(() => {
     if (status === "succeeded") {
@@ -61,49 +61,13 @@ const HomeScreen = () => {
     <View style={styles.container}>
 
       {/* ✅ Header */}
-      <View style={styles.header}>
-        
-        <TouchableOpacity style={styles.menuButton} onPress={toggleDrawer}>
-          <Icon name="menu" size={42} color="black" />
-        </TouchableOpacity>
+      <CustomHeader
+        toggleDrawer={toggleDrawer}
+        user={user}
+        points={points}
+        unreadCount={unreadCount}
+      />
 
-        <View style={styles.profileContainer}>
-          <Avatar.Image size={42} source={{ uri: "https://avatar.iran.liara.run/public/boy" }} />
-          <View style={styles.profileInfo}>
-            <Text style={styles.subText}>Welcome,</Text>
-            <Text style={styles.nameText}>{user ? user.name : "N/A"}</Text>
-          </View>
-        </View>
-
-        <View style={styles.walletWrapper}>
-          <TouchableOpacity style={styles.walletButton} onPress={() => navigation.navigate('Notifications')}>
-            <FIcon name="wallet" size={28} color="black" />
-            {points > 0 && (
-              <Badge style={{ 
-                position: "absolute", 
-                top: -20, right: -10, 
-                fontSize: 12, padding: 0, width: 40, height: 25, 
-                borderRadius: 100,
-                backgroundColor: "#f39c12"
-              }}>
-                {points}
-              </Badge>
-            )}
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.notificationWrapper}>
-          <TouchableOpacity style={styles.notificationButton} onPress={() => navigation.navigate('Notifications')}>
-            <Icon name="bell-outline" size={32} color="black" />
-            {unreadCount > 0 && (
-              <Badge style={{ position: "absolute", top: -4, right: -4 }}>
-                {unreadCount}
-              </Badge>
-            )}
-          </TouchableOpacity>
-        </View>
-
-      </View>
 
       {/* ✅ Drawer */}
       <CustomDrawer isOpen={isDrawerOpen} closeDrawer={toggleDrawer} />
@@ -121,6 +85,7 @@ const HomeScreen = () => {
 
         {/* Action Buttons */}
         <View style={styles.actionBtns}>
+
           <Button
             mode="contained"
             style={styles.actionBtnItem}
