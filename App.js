@@ -5,6 +5,7 @@ import AppNavigator from "./src/navigation/AppNavigator";
 import { DefaultTheme, PaperProvider } from "react-native-paper";
 import { COLORS } from "./theme";
 import Toast from 'react-native-toast-message';
+import StayTimerProvider from "./src/components/StayTimerProvider";
 
 const theme = {
   ...DefaultTheme,
@@ -24,6 +25,7 @@ export default function App() {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <PaperProvider theme={theme}>
+          <StayTimerProvider /> 
           <AppNavigator />
           <Toast />
         </PaperProvider>
@@ -31,3 +33,4 @@ export default function App() {
     </Provider>
   );
 }
+

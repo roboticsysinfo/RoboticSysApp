@@ -4,17 +4,29 @@ import { Card, Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { COLORS } from '../../theme';
 import appLogo from "../assets/kg-logo.jpg"
+import HomeWeatherCard from './weather/HomeWeatherCard';
+import { useNavigation } from '@react-navigation/native';
 
 const OrdersCounts = () => {
 
+    const navigation = useNavigation();
+
     // Assuming your orders slice is named "requestOrder" and contains an array "orders"
     const { requests: orders, loading, error } = useSelector((state) => state.requestOrder);
+    const { weatherData, } = useSelector(state => state.weather);
+
+    const currentTemp = weatherData?.main?.temp;
+    const feelsLike = weatherData?.main?.feels_like;
+    const condition = weatherData?.weather?.[0]?.main;
+    const icon = weatherData?.weather?.[0]?.icon;
+    const cityName = weatherData?.name;
 
     // Calculate counts based on order status
     const pendingCount = orders.filter(order => order.status === 'pending').length;
     const acceptedCount = orders.filter(order => order.status === 'accepted').length;
     const cancelledCount = orders.filter(order => order.status === 'cancelled').length;
 
+    
     return (
 
         <View style={styles.ordersInfocontainer}>
@@ -47,6 +59,15 @@ const OrdersCounts = () => {
                 </Card.Content>
             </Card>
 
+
+            <HomeWeatherCard
+                location={cityName}
+                temperature={currentTemp}
+                weatherIcon={icon}
+                onPress={() => navigation.navigate("Weather")}
+            />
+
+
         </View>
 
     );
@@ -64,16 +85,16 @@ const styles = StyleSheet.create({
         height: '100%',
         left: 15,
         top: 30
-      },
-      ordersInfocontainer: {
+    },
+    ordersInfocontainer: {
         padding: 20,
         flexDirection: "row",
         justifyContent: 'flex-start',
         alignItems: 'center',
         flexWrap: "wrap",
         position: 'relative', // Important to allow absolute image behind
-      },
-      
+    },
+
     card: {
         width: 150,
         marginVertical: 5,

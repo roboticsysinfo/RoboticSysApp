@@ -109,6 +109,14 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                             right={() => <Icon name="chevron-right" size={22} />}
                             onPress={() => navigation.navigate("Select Language")}
                         />
+
+                        <List.Item
+                            title="Weather Info"
+                            left={() => <Icon name="weather-cloudy" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate("Weather")}
+                        />
+
                     </List.Section>
 
                     <Button

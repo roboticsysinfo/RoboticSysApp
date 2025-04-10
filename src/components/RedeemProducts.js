@@ -50,7 +50,7 @@ const RedeemProducts = () => {
     return (
         <View style={styles.rewardList}>
             {loading ? (
-                <ActivityIndicator size={small} color={COLORS.secondaryColor} />
+                <ActivityIndicator style={{marginTop: 30}} size={'large'} color={COLORS.primaryColor} />
             ) : rProducts.length === 0 ? (
                 <Text style={{ textAlign: 'center', marginTop: 20 }}>No products found right now</Text>
             ) : (

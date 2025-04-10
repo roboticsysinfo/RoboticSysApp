@@ -9,7 +9,9 @@ import deliveryPreferenceReducer from "../redux/slices/deliveryPreferenceSlice";
 import notificationsReducer from "../redux/slices/notificationSlice"
 import reviewReducer from "../redux/slices/reviewSlice"
 import adminReducer from "../redux/slices/adminSlice";
-import redeemProductsReducer from "../redux/slices/redeemProductSlice"
+import redeemProductsReducer from "../redux/slices/redeemProductSlice";
+import weatherReducer from "../redux/slices/weatherSlice";
+import rewardReducer from "../redux/slices/rewardSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { persistStore, persistReducer } from "redux-persist";
 
@@ -19,6 +21,7 @@ import { persistStore, persistReducer } from "redux-persist";
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
+  whitelist: ['weather'],
 };
 
 
@@ -28,6 +31,7 @@ const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
   reducer: {
     auth: persistedAuthReducer, // Auth reducer ko persist kiya gaya hai
+    weather: weatherReducer,
     language: languageReducer,
     products: productsReducer,
     requestOrder: requestOrderReducer,
@@ -37,7 +41,8 @@ const store = configureStore({
     notifications: notificationsReducer,
     reviews: reviewReducer,
     adminData: adminReducer,
-    redeemProducts: redeemProductsReducer
+    redeemProducts: redeemProductsReducer,
+    reward: rewardReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>

@@ -16,6 +16,7 @@ const AddProductScreen = () => {
     const { categories } = useSelector(state => state.categories);
 
     const [formData, setFormData] = useState({
+
         name: '',
         season: '',
         price_per_unit: '',
@@ -25,6 +26,7 @@ const AddProductScreen = () => {
         harvest_date: new Date(),
         description: '',
         product_image: null,
+
     });
 
     const [openDatePicker, setOpenDatePicker] = useState(false);

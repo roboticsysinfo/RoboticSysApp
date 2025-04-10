@@ -46,7 +46,7 @@ const ShopScreen = () => {
 
 
   if (status === "loading") {
-    return <ActivityIndicator size="large" color={COLORS.primaryColor} />;
+    return <ActivityIndicator style={{marginTop: 30}} size="large" color={COLORS.primaryColor} />;
   }
 
   if (status === "failed") {

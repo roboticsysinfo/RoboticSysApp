@@ -13,6 +13,7 @@ import Toast from 'react-native-toast-message';
 import { getFarmerById } from '../redux/slices/authSlice';
 import { fetchRedeemProducts } from '../redux/slices/redeemProductSlice';
 import RedeemProducts from '../components/RedeemProducts';
+import { incrementReferralShare } from '../redux/slices/rewardSlice';
 
 
 const ReferAndEarnScreen = () => {
@@ -30,6 +31,7 @@ const ReferAndEarnScreen = () => {
   const referralCode = farmerDetails?.referralCode;
   const points = farmerDetails?.points;
 
+
   useFocusEffect(
     useCallback(() => {
       if (userId) {
@@ -40,7 +42,10 @@ const ReferAndEarnScreen = () => {
 
   useEffect(() => {
     dispatch(fetchRedeemProducts());
-  }, [dispatch]);
+    if (userId) {
+      dispatch(getFarmerById(userId));
+    }
+  }, [dispatch, userId]);
 
 
   // Copy Referral Code
@@ -53,20 +58,37 @@ const ReferAndEarnScreen = () => {
     });
   };
 
-
   // Share Download Url with Referral Code
 
   const shareReferral = async () => {
-
     const message = `Join our app and get rewards! Use my referral code: ${referralCode}.\nDownload the app: https://yourappdownloadlink.com`;
-
+  
     try {
-      await Share.share({ message });
+      const result = await Share.share({ message });
+  
+      if (result.action === Share.sharedAction) {
+        const res = await dispatch(incrementReferralShare(userId));
+  
+        // Check for daily limit
+        if (res.payload?.message?.includes("Daily share limit")) {
+          Toast.show({
+            type: 'info',
+            text1: res.payload.message,
+            position: 'bottom',
+          });
+        } else {
+          // ✅ Re-fetch updated points
+          dispatch(getFarmerById(userId));
+        }
+      }
+  
     } catch (error) {
       console.log("Error sharing referral:", error);
     }
-
   };
+  
+
+
 
 
   return (
@@ -76,12 +98,12 @@ const ReferAndEarnScreen = () => {
       {/* Header */}
       <View style={styles.header}>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
+        <TouchableOpacity onPress={() => navigation.replace('Dashboard')}>
           <Icon name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
 
         <Text style={styles.headerText}>Refer your Friend</Text>
-        <Text style={styles.subHeaderText}>Earn 100 points each</Text>
+        <Text style={styles.subHeaderText}>Earn 10 points each</Text>
         <Image
           source={coins}
           style={styles.coinsImage}
@@ -131,11 +153,11 @@ const ReferAndEarnScreen = () => {
         </View>
         <View style={styles.step}>
           <Icon name="cube-outline" size={20} color="#f39c12" />
-          <Text style={styles.stepText}>When Your friend register on the app after KYC approve get 100 points each</Text>
+          <Text style={styles.stepText}>When Your friend register on the app after KYC approve get 10 points each</Text>
         </View>
         <View style={styles.step}>
           <Icon name="cash-outline" size={20} color="#27ae60" />
-          <Text style={styles.stepText}>You also get 100 Points when your friend register on the app</Text>
+          <Text style={styles.stepText}>You also get 10 Points when your friend register on the app</Text>
         </View>
       </Card>
 
@@ -143,7 +165,7 @@ const ReferAndEarnScreen = () => {
       <Text style={styles.rewardHeader}>Popular in Reward </Text>
       <Text style={{ fontSize: 18, paddingHorizontal: 16, fontWeight: "bold", color: "#f39c12" }}>Redeem Exciting Products with points</Text>
 
-        <RedeemProducts />
+      <RedeemProducts />
 
     </ScrollView>
 

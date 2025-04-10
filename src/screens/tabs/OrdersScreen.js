@@ -1,11 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert, ToastAndroid } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert, ToastAndroid, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { approveOrderRequest, cancelOrderRequest, getOrderRequestByFarmerId } from '../../redux/slices/orderSlice';
 import { ActivityIndicator, Button, Card } from 'react-native-paper';
 import { COLORS } from '../../../theme';
 import moment from 'moment';
-
+import noOrder from "../../assets/noOrder.png";
 
 
 const OrdersScreen = () => {
@@ -34,7 +34,7 @@ const OrdersScreen = () => {
 
     <View style={{ flex: 1 }}>
 
-      {loading && <ActivityIndicator style={styles.loading} size="large" color={COLORS.primaryColor} />}
+      {loading && <Text style={{textAlign: 'center' , marginTop: 20}}>Loading...</Text>}
 
       {error && orders?.length === 0 && (
         <Text style={styles.error}>
@@ -45,7 +45,16 @@ const OrdersScreen = () => {
       )}
 
       {orders?.length === 0 && !loading ? (
-        <Text style={styles.noOrders}>No orders found</Text>
+
+        <View style={styles.emptyContainer}>
+          <Image source={noOrder} style={styles.image} />
+          <Text style={styles.emptyTitle}>No Orders Yet</Text>
+          <Text style={styles.emptySubtitle}>
+            We’ll let you know when there will be something to update you.
+          </Text>
+        </View>
+        
+
       ) : (
         <FlatList
           data={[...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))}
@@ -264,7 +273,15 @@ const styles = StyleSheet.create({
   dateTime: {
     fontSize: 14,
     marginTop: 10
-  }
+  },
+  emptyContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+
+  image: { width: 250, height: 250, marginBottom: 16 , resizeMode: "contain"},
+
+  emptyTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 8 },
+
+  emptySubtitle: { fontSize: 14, color: "gray", textAlign: "center", paddingHorizontal: 40 },
+
 });
 
 export default OrdersScreen;

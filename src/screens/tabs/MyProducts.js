@@ -10,6 +10,7 @@ import CustomHeader from '../../components/CustomHeader';
 import CustomDrawer from '../../navigation/CustomDrawer';
 import { fetchNotifications } from '../../redux/slices/notificationSlice';
 import { getOrderRequestByFarmerId } from '../../redux/slices/orderSlice';
+import { REACT_APP_BASE_URI } from '@env'
 
 const MyProducts = () => {
 
@@ -28,6 +29,8 @@ const MyProducts = () => {
   // Drawer ka state
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+
+console.log("products", products)
 
   useFocusEffect(
 
@@ -126,7 +129,15 @@ const MyProducts = () => {
 
         {/* Handle "No products found" case */}
         {status === "succeeded" && renderedProducts.length === 0 && (
-          <Text>No products found</Text>
+
+          <View style={styles.emptyContainer}>
+            <Image source={noOrder} style={styles.image} />
+            <Text style={styles.emptyTitle}>No Orders Yet</Text>
+            <Text style={styles.emptySubtitle}>
+              We’ll let you know when there will be something to update you.
+            </Text>
+          </View>
+
         )}
 
         {/* Use FlatList to render products */}
@@ -152,13 +163,13 @@ const MyProducts = () => {
                       >
                         Edit
                       </Button>
-                      <IconButton icon="delete" onPress={() => handleDelete(item._id)} />
+                      <FIcon style={{marginLeft: 20}} name="trash-can" color={'#DA2825'} size={20} onPress={() => handleDelete(item._id)} />
                     </View>
                   </View>
 
                   <Image
-                    source={{ uri: `https://kisaangrowth-backend.onrender.com/${item.product_image}` || 'https://via.placeholder.com/150' }} // Fallback image
-                    style={styles.image}
+                    source={{ uri: `${REACT_APP_BASE_URI}/${item.product_image}` || 'https://via.placeholder.com/150' }} // Fallback image
+                    style={styles.productImage}
                   />
 
                 </View>
@@ -178,15 +189,15 @@ const MyProducts = () => {
 const styles = {
   container: { flex: 1, padding: 10 },
   scrollContainer: { paddingBottom: 20, paddingHorizontal: 10 },
-  card: { marginBottom: 15, padding: 10, borderRadius: 10, borderColor: "#efefef", borderWidth: 1 },
+  card: { marginBottom: 15, padding: 10, borderRadius: 10, borderColor: "#fff", borderWidth: 1 },
   row: { flexDirection: 'row', alignItems: 'center' },
-  badgeContainer: { backgroundColor: COLORS.secondaryColor, borderRadius: 5, padding: 5, marginRight: 10 },
+  badgeContainer: { backgroundColor: COLORS.secondaryColor, borderRadius: 5, padding: 5, marginRight: 10,},
   badge: { color: 'white', fontWeight: 'bold' },
   infoContainer: { flex: 1 },
   category: { color: 'gray', fontSize: 12 },
-  title: { fontWeight: 'bold', fontSize: 16 },
+  title: { fontWeight: 'bold', fontSize: 18 },
   actionRow: { flexDirection: 'row', alignItems: "center", marginTop: 10 },
-  image: { width: 80, height: 80, borderRadius: 5, borderWidth: 1, borderColor: "#000", resizeMode: 'cover', },
+  productImage: { width: 80, height: 80, borderRadius: 5, borderWidth: 1, borderColor: "#000", resizeMode: 'cover', },
   editbtn: { backgroundColor: COLORS.primaryColor, marginBottom: 0, padding: 0, color: "#fff", fontSize: 12, },
   addProductBtn: {
     borderRadius: 4,
@@ -211,6 +222,13 @@ const styles = {
     fontSize: 16,
     fontWeight: 'bold',
   },
+  emptyContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+
+  image: { width: 250, height: 250, marginBottom: 16, resizeMode: "contain" },
+
+  emptyTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 8 },
+
+  emptySubtitle: { fontSize: 14, color: "gray", textAlign: "center", paddingHorizontal: 40 },
 };
 
 export default MyProducts;

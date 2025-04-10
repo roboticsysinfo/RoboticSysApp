@@ -26,6 +26,7 @@ import OrdersScreen from '../screens/tabs/OrdersScreen';
 import KYCPendingScreen from '../screens/KYCPendingScreen';
 import ReferAndEarnScreen from '../screens/ReferAndEarnScreen';
 import { navigationRef } from '../services/navigationService';
+import WeatherScreen from '../screens/WeatherScreen';
 
 
 const Stack = createStackNavigator();
@@ -105,6 +106,7 @@ const AppNavigator = () => {
         <Stack.Screen name="All Shops" component={AllShopsScreen} options={{ headerShown: true }} />
         <Stack.Screen name="Shop Details" component={ShopDetailsScreen} options={{ headerShown: true }} />
         <Stack.Screen name="Orders" component={OrdersScreen} />
+        <Stack.Screen name="Weather" component={WeatherScreen} options={{ headerShown: true }}/>
 
         <Stack.Screen name="ReferandEarn" component={ReferAndEarnScreen} options={{ headerShown: false }}/>
 
