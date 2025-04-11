@@ -4,7 +4,7 @@ import { store, persistor } from "./src/redux/store";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { DefaultTheme, PaperProvider } from "react-native-paper";
 import { COLORS } from "./theme";
-import Toast from 'react-native-toast-message';
+import Toast, { BaseToast } from 'react-native-toast-message';
 import StayTimerProvider from "./src/components/StayTimerProvider";
 
 const theme = {
@@ -19,6 +19,20 @@ const theme = {
   },
 };
 
+  const toastConfig = {
+    info: (props) => (
+      <BaseToast
+        {...props}
+        style={{ borderLeftColor: '#2196F3', height: 80 }} // taller toast
+        contentContainerStyle={{ paddingHorizontal: 15 }}
+        text1Style={{
+          fontSize: 24,
+          fontWeight: 'bold',
+        }}
+      />
+    ),
+  };
+
 
 export default function App() {
   return (
@@ -27,7 +41,7 @@ export default function App() {
         <PaperProvider theme={theme}>
           <StayTimerProvider /> 
           <AppNavigator />
-          <Toast />
+          <Toast  config={toastConfig} />
         </PaperProvider>
       </PersistGate>
     </Provider>

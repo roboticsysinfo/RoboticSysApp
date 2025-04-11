@@ -100,7 +100,7 @@ const OtpScreen = ({ route }) => {
         </TouchableOpacity>
       )}
 
-      {error && <Text style={{fontWeight: 600, marginTop: 20}}>{error}</Text>}
+      {error && <Text style={{fontWeight: 600, marginTop: 20, color: "#DA2825"}}>{error}</Text>}
 
     </View>
   );

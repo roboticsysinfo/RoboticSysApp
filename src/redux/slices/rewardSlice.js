@@ -28,10 +28,27 @@ export const incrementReferralShare = createAsyncThunk(
 );
 
 
+// 🔄 Thunk to fetch point transactions by farmerId
+export const fetchPointTransactions = createAsyncThunk(
+  "pointTransactions/fetch",
+  async (farmerId, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`/farmer/points-transaction/${farmerId}`);
+
+      console.log("points transaction history", res.data)
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 const rewardSlice = createSlice({
   name: 'reward',
   initialState: {
     points: 0,
+    pointsTransactions: [],
     loading: false,
     error: null,
     message: null
@@ -56,7 +73,20 @@ const rewardSlice = createSlice({
       .addCase(incrementReferralShare.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      .addCase(fetchPointTransactions.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchPointTransactions.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.pointsTransactions = action.payload;
+      })
+      .addCase(fetchPointTransactions.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload?.message || "Something went wrong";
       });
+
   }
 });
 

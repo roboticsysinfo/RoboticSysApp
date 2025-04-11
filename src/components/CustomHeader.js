@@ -32,7 +32,7 @@ const CustomHeader = ({ toggleDrawer, user, points, unreadCount }) => {
 
       <TouchableOpacity
         style={styles.walletButton}
-        onPress={() => navigation.navigate("Redeem History")}
+        onPress={() => navigation.navigate("Point Transactions")}
       >
         <FIcon name="wallet" size={28} color="black" />
         {points > 0 && (

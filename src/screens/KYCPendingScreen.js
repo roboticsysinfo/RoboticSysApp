@@ -29,7 +29,7 @@ const KYCPendingScreen = ({ navigation }) => {
       <Button
         mode="contained"
         style={styles.button}
-        onPress={() => navigation.goBack()} // Or to logout or contact support
+        onPress={() => navigation.navigate('Login')} // Or to logout or contact support
       >
         Go Back
       </Button>

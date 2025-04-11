@@ -6,15 +6,14 @@ import { fetchRedeemProducts, redeemProduct } from '../redux/slices/redeemProduc
 import sampleProductImage from '../assets/productimagenot.png';
 import { COLORS } from '../../theme';
 import Toast from 'react-native-toast-message';
+import { REACT_APP_BASE_URI } from "@env"
 
 const RedeemProducts = () => {
     const dispatch = useDispatch();
 
     const { rProducts, loading } = useSelector((state) => state.redeemProducts);
-    const { user , farmerDetails} = useSelector((state) => state.auth); 
-
+    const { user, farmerDetails } = useSelector((state) => state.auth);
     farmerId = user?.id
-
 
     useEffect(() => {
         dispatch(fetchRedeemProducts());
@@ -47,39 +46,54 @@ const RedeemProducts = () => {
             });
     };
 
+
     return (
         <View style={styles.rewardList}>
             {loading ? (
-                <ActivityIndicator style={{marginTop: 30}} size={'large'} color={COLORS.primaryColor} />
+                <ActivityIndicator
+                    style={{ marginTop: 30 }}
+                    size={'large'}
+                    color={COLORS.primaryColor}
+                />
             ) : rProducts.length === 0 ? (
-                <Text style={{ textAlign: 'center', marginTop: 20 }}>No products found right now</Text>
+                <Text style={{ textAlign: 'center', marginTop: 20 }}>
+                    No products found right now
+                </Text>
             ) : (
-                rProducts.map((product) => (
-                    <Card key={product._id} style={styles.rewardCard}>
-                        <Image
-                            source={
-                                product.image
-                                    ? { uri: product.image }
-                                    : sampleProductImage
-                            }
-                            style={styles.rewardImage}
-                        />
-                        <Text style={styles.rewardTitle}>{product.name}</Text>
-                        <Divider />
-                        <Button
-                            mode="contained"
-                            compact
-                            style={styles.useBtn}
-                            labelStyle={{ fontSize: 12 }}
-                            onPress={() => handleRedeem(product._id)}
-                        >
-                            Use 🪙 {product.requiredPoints} Pts
-                        </Button>
-                    </Card>
-                ))
+                [...rProducts] // create a shallow copy
+                    .sort((a, b) => b.requiredPoints - a.requiredPoints) // sort descending
+                    .map((product) => (
+                        <Card key={product._id} style={styles.rewardCard}>
+                            <Image
+                                source={
+                                    product.r_product_img
+                                        ? (() => {
+                                            const imgUri = `${REACT_APP_BASE_URI}/${product.r_product_img}`;
+                                            console.log('Image URI:', imgUri);
+                                            return { uri: imgUri };
+                                        })()
+                                        : sampleProductImage
+                                }
+                                style={styles.rewardImage}
+                            />
+                            <Divider />
+                            <Text style={styles.rewardTitle}>{product.name}</Text>
+                            <Button
+                                mode="contained"
+                                compact
+                                style={styles.useBtn}
+                                labelStyle={{ fontSize: 12, flexShrink: 1, textAlign: 'center' }}
+                                onPress={() => handleRedeem(product._id)}
+                            >
+                                Use 🪙 {product.requiredPoints} Pts
+                            </Button>
+                        </Card>
+                    ))
             )}
         </View>
     );
+
+
 };
 
 const styles = StyleSheet.create({
@@ -100,19 +114,22 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff"
     },
     rewardImage: {
-        width: 60,
-        height: 60,
+        width: 100,
+        height: 100,
         resizeMode: 'contain',
+        textAlign: "center"
+
     },
     rewardTitle: {
         fontWeight: '600',
         marginTop: 8,
-        fontSize: 14
+        fontSize: 16,
+        textAlign: "center"
     },
     useBtn: {
         marginTop: 12,
         backgroundColor: COLORS.secondaryColor,
-        width: 120
+        width: 130
     },
 });
 

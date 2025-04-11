@@ -189,7 +189,7 @@ console.log("products", products)
 const styles = {
   container: { flex: 1, padding: 10 },
   scrollContainer: { paddingBottom: 20, paddingHorizontal: 10 },
-  card: { marginBottom: 15, padding: 10, borderRadius: 10, borderColor: "#fff", borderWidth: 1 },
+  card: { elevation: 2, marginBottom: 15, padding: 10, borderRadius: 10, borderColor: "#fff", borderWidth: 1, backgroundColor: "#fff",  },
   row: { flexDirection: 'row', alignItems: 'center' },
   badgeContainer: { backgroundColor: COLORS.secondaryColor, borderRadius: 5, padding: 5, marginRight: 10,},
   badge: { color: 'white', fontWeight: 'bold' },

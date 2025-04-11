@@ -99,6 +99,7 @@ const authSlice = createSlice({
     loading: false,
     error: null,
     otpSent: false,
+    isKYCVerified : null
   },
   reducers: {
     logout: (state) => {
@@ -151,9 +152,10 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(sendOTP.fulfilled, (state) => {
+      .addCase(sendOTP.fulfilled, (state, action) => { // ✅ Add action
         state.loading = false;
         state.otpSent = true;
+        state.isKYCVerified = action.payload.isKYCVerified;
       })
       .addCase(sendOTP.rejected, (state, action) => {
         state.loading = false;

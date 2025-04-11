@@ -12,6 +12,7 @@ import adminReducer from "../redux/slices/adminSlice";
 import redeemProductsReducer from "../redux/slices/redeemProductSlice";
 import weatherReducer from "../redux/slices/weatherSlice";
 import rewardReducer from "../redux/slices/rewardSlice";
+import farmingTipsReducer from "../redux/slices/farmingTipsSlice"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { persistStore, persistReducer } from "redux-persist";
 
@@ -43,6 +44,7 @@ const store = configureStore({
     adminData: adminReducer,
     redeemProducts: redeemProductsReducer,
     reward: rewardReducer,
+    farmingTips: farmingTipsReducer
   },
   devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>

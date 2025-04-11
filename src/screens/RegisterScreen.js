@@ -179,9 +179,19 @@ const RegisterScreen = () => {
       <Button mode="outlined" onPress={handlePickImage} style={{ marginBottom: 10 }}>
         {aadharImage ? "Change Aadhaar Image" : "Upload Aadhaar Card"}
       </Button>
+
+      {aadharImage && (
+        <Image
+          source={{ uri: aadharImage.uri }}
+          style={{ width: 200, height: 200, borderRadius: 10, marginBottom: 10 }}
+        />
+      )}
+
+
       {errors.aadharImage && (
         <Text style={styles.errorText}>{errors.aadharImage}</Text>
       )}
+
 
       <Button
         mode="contained"
@@ -192,7 +202,7 @@ const RegisterScreen = () => {
         {loading ? <ActivityIndicator color="#fff" /> : "Register"}
       </Button>
 
-      <TouchableOpacity  onPress={()=> navigation.navigate('Login')}>
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.loginText}>
           Already have an account? <Text style={styles.link}>Login here</Text>
         </Text>
@@ -215,7 +225,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 6,
     width: "100%",
-  },  
+  },
   logoContainer: {
     alignItems: "center",
     marginBottom: 20,

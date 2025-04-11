@@ -18,7 +18,6 @@ import { incrementReferralShare } from '../redux/slices/rewardSlice';
 
 const ReferAndEarnScreen = () => {
 
-
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
@@ -217,7 +216,7 @@ const styles = StyleSheet.create({
   coinIcon: {
     width: 30,
     height: 30,
-    marginRight: 10,
+    marginRight: 5,
   },
   pointsText: {
     fontSize: 24,

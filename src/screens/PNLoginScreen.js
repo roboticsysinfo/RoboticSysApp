@@ -14,7 +14,7 @@ const PNLoginScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const language = useSelector((state) => state.language.language);
-  const { otpSent, loading } = useSelector((state) => state.auth);
+  const { otpSent, isKYCVerified, loading } = useSelector((state) => state.auth);
   
 
   // Update language
@@ -22,23 +22,49 @@ const PNLoginScreen = () => {
     i18n.changeLanguage(language);
   }, [language]);
 
-  const handleSendOTP = () => {
+  // const handleSendOTP = () => {
 
+  //   if (!phoneNumber || phoneNumber.length !== 10) {
+  //     Alert.alert("Error", t('Please enter a valid phone number.'));
+  //     return;
+  //   }
+
+  //   dispatch(sendOTP(phoneNumber)).then((result) => {
+
+  //     if (sendOTP.fulfilled.match(result)) {
+  //       navigation.replace('OTP Verify', { phoneNumber }); // Navigate to OTP screen if successful
+  //     } else {
+  //       Alert.alert("Error", result.payload?.message || t('Cannot Find Phone Number, Please Use Another Number') );
+  //     }
+  //   });
+
+  // };
+
+
+  const handleSendOTP = () => {
     if (!phoneNumber || phoneNumber.length !== 10) {
       Alert.alert("Error", t('Please enter a valid phone number.'));
       return;
     }
-
+  
     dispatch(sendOTP(phoneNumber)).then((result) => {
-
       if (sendOTP.fulfilled.match(result)) {
-        navigation.replace('OTP Verify', { phoneNumber }); // Navigate to OTP screen if successful
+        const { isKYCVerified } = result.payload;
+  
+        if (!isKYCVerified) {
+          navigation.replace('KYC Pending'); // 🚨 Navigate to KYC pending screen
+        } else {
+          navigation.replace('OTP Verify', { phoneNumber }); // ✅ Verified, go to OTP screen
+        }
+  
       } else {
-        Alert.alert("Error", result.payload?.message || t('Cannot Find Phone Number, Please Use Another Number') );
+        Alert.alert("Error", result.payload?.message || t('Cannot Find Phone Number, Please Use Another Number'));
       }
     });
-
   };
+  
+
+
 
   return (
 

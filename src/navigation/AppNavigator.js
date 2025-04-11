@@ -27,6 +27,8 @@ import KYCPendingScreen from '../screens/KYCPendingScreen';
 import ReferAndEarnScreen from '../screens/ReferAndEarnScreen';
 import { navigationRef } from '../services/navigationService';
 import WeatherScreen from '../screens/WeatherScreen';
+import PointTransactionScreen from '../screens/PointTransactionScreen';
+import FarmingTipsScreen from '../screens/FarmingTipsScreen';
 
 
 const Stack = createStackNavigator();
@@ -109,7 +111,9 @@ const AppNavigator = () => {
         <Stack.Screen name="Weather" component={WeatherScreen} options={{ headerShown: true }}/>
 
         <Stack.Screen name="ReferandEarn" component={ReferAndEarnScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="Point Transactions" component={PointTransactionScreen} options={{ headerShown: true }}/>
 
+        <Stack.Screen name="Farming Tips" component={FarmingTipsScreen} options={{ headerShown: true }}/>
 
       </Stack.Navigator>
       

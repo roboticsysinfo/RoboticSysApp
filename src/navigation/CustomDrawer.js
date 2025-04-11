@@ -17,6 +17,7 @@ import { logoutUser } from "../redux/slices/authSlice";
 import { useDispatch } from "react-redux";
 
 const CustomDrawer = ({ isOpen, closeDrawer }) => {
+
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
@@ -28,7 +29,9 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
     };
 
     return (
+
         <View style={styles.overlayContainer}>
+
             {/* Tappable transparent area to close drawer */}
             <TouchableWithoutFeedback onPress={closeDrawer}>
                 <View style={styles.backdrop} />
@@ -36,6 +39,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
 
             {/* Actual Drawer */}
             <View style={styles.drawerContainer}>
+                
                 <View style={styles.header}>
                     <Image source={appLogo} style={styles.logo} />
                     <TouchableOpacity onPress={closeDrawer} style={styles.closeButton}>
@@ -47,11 +51,19 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
 
                 <ScrollView style={styles.settingListContainer}>
                     <List.Section>
+
                         <List.Item
-                            title="Orders"
-                            left={() => <Icon name="shopping" size={22} />}
+                            title="Weather Info"
+                            left={() => <Icon name="weather-cloudy" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
-                            onPress={() => navigation.navigate("Orders")}
+                            onPress={() => navigation.navigate("Weather")}
+                        />
+
+                        <List.Item
+                            title="My Points Score"
+                            left={() => <FIcon name="coins" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate("Point Transactions")}
                         />
 
                         <List.Item
@@ -67,6 +79,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                             right={() => <Icon name="chevron-right" size={22} />}
                             onPress={() => navigation.navigate("My Products")}
                         />
+
 
                         <List.Item
                             title="My Details"
@@ -111,10 +124,10 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                         />
 
                         <List.Item
-                            title="Weather Info"
-                            left={() => <Icon name="weather-cloudy" size={22} />}
+                            title="Farming Tips"
+                            left={() => <Icon name="lightbulb-outline" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
-                            onPress={() => navigation.navigate("Weather")}
+                            onPress={() => navigation.navigate("Farming Tips")}
                         />
 
                     </List.Section>

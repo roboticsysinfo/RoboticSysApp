@@ -86,22 +86,44 @@ const HomeScreen = () => {
   const getLocationAndFetchWeather = async () => {
     if (hasRequestedLocation.current) return;
     hasRequestedLocation.current = true;
-
+  
     const permissionGranted = await requestLocationPermission();
     if (!permissionGranted) return;
-
+  
     Geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
+        console.log("Got location:", latitude, longitude);
         dispatch(fetchWeatherData({ lat: latitude, lon: longitude }));
         dispatch(fetchFiveDayForecast({ lat: latitude, lon: longitude }));
       },
       (err) => {
         console.warn("Geolocation error:", err.message);
+  
+        if (err.code === 3) {
+          // code 3 = TIMEOUT
+          // Retry once after short delay
+          setTimeout(() => {
+            Geolocation.getCurrentPosition(
+              (pos) => {
+                const { latitude, longitude } = pos.coords;
+                dispatch(fetchWeatherData({ lat: latitude, lon: longitude }));
+                dispatch(fetchFiveDayForecast({ lat: latitude, lon: longitude }));
+              },
+              (error) => {
+                console.error("Retry location failed:", error.message);
+              },
+              { enableHighAccuracy: true, timeout: 15000, maximumAge: 1000 }
+            );
+          }, 3000);
+        }
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000 }
     );
   };
+  
+
+
 
   useEffect(() => {
     getLocationAndFetchWeather();
