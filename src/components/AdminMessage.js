@@ -20,7 +20,7 @@ const AdminMessagesScreen = () => {
 
     return (
 
-        <View style={{ padding: 16 }}>
+        <View style={{ padding: 0 }}>
 
             {messages.length === 0 ? (
                 <Text style={styles.noMessage}></Text>

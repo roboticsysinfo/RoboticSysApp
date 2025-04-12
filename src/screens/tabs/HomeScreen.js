@@ -146,8 +146,11 @@ const HomeScreen = () => {
       <CustomDrawer isOpen={isDrawerOpen} closeDrawer={toggleDrawer} />
 
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+
         <OrdersCounts />
+        
         <Divider style={styles.divider} />
+
         <AdminMessagesScreen />
 
         <View style={styles.actionBtns}>
@@ -185,7 +188,33 @@ const HomeScreen = () => {
               </Text>
             </View>
           </Button>
+
+          <Button
+            mode="contained"
+            style={styles.actionBtnItem}
+            contentStyle={styles.buttonContent}
+            onPress={() => navigation.navigate("Family Farmer Requests")}
+          >
+            <View style={styles.buttonInner}>
+              <FIcon name="user-plus" size={24} style={styles.icon} />
+              <Text style={styles.buttonText}>Family Requests</Text>
+            </View>
+          </Button>
+
+          <Button
+            mode="contained"
+            style={styles.actionBtnItem}
+            contentStyle={styles.buttonContent}
+            onPress={() => navigation.navigate("Family Customers List")}
+          >
+            <View style={styles.buttonInner}>
+              <FIcon name="users" size={24} style={styles.icon} />
+              <Text style={styles.buttonText}>Family Customers List</Text>
+            </View>
+          </Button>
+
         </View>
+
       </ScrollView>
     </View>
   );

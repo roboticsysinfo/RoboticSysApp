@@ -29,6 +29,8 @@ import { navigationRef } from '../services/navigationService';
 import WeatherScreen from '../screens/WeatherScreen';
 import PointTransactionScreen from '../screens/PointTransactionScreen';
 import FarmingTipsScreen from '../screens/FarmingTipsScreen';
+import FamilyFarmerRequestScreen from '../screens/FamilyFarmerRequestScreen';
+import FamilyCustomersList from '../screens/FamilyCustomersList';
 
 
 const Stack = createStackNavigator();
@@ -114,6 +116,11 @@ const AppNavigator = () => {
         <Stack.Screen name="Point Transactions" component={PointTransactionScreen} options={{ headerShown: true }}/>
 
         <Stack.Screen name="Farming Tips" component={FarmingTipsScreen} options={{ headerShown: true }}/>
+
+        <Stack.Screen name="Family Farmer Requests" component={FamilyFarmerRequestScreen} options={{ headerShown: true }}/>
+
+        <Stack.Screen name="Family Customers List" component={FamilyCustomersList} options={{ headerShown: true }}/>
+        
 
       </Stack.Navigator>
       

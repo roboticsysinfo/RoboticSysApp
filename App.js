@@ -7,6 +7,7 @@ import { COLORS } from "./theme";
 import Toast, { BaseToast } from 'react-native-toast-message';
 import StayTimerProvider from "./src/components/StayTimerProvider";
 
+
 const theme = {
   ...DefaultTheme,
   colors: {

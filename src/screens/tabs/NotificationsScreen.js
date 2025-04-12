@@ -64,6 +64,8 @@ const NotificationsScreen = () => {
                   navigation.navigate("Orders", { orderId: item.orderId });
                 } else if (item.type === "review") {
                   navigation.navigate("My Shop Reviews", { reviewId: item.reviewId });
+                } else if (item.type === "familyRequest") {
+                  navigation.navigate("Family Farmer Requests", { reviewId: item.requestId });
                 }
               }}
               style={[

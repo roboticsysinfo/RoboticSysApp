@@ -39,7 +39,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
 
             {/* Actual Drawer */}
             <View style={styles.drawerContainer}>
-                
+
                 <View style={styles.header}>
                     <Image source={appLogo} style={styles.logo} />
                     <TouchableOpacity onPress={closeDrawer} style={styles.closeButton}>
@@ -53,6 +53,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                     <List.Section>
 
                         <List.Item
+                            style={styles.drawerlistItem}
                             title="Weather Info"
                             left={() => <Icon name="weather-cloudy" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
@@ -60,6 +61,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                         />
 
                         <List.Item
+                            style={styles.drawerlistItem}
                             title="My Points Score"
                             left={() => <FIcon name="coins" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
@@ -67,6 +69,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                         />
 
                         <List.Item
+                            style={styles.drawerlistItem}
                             title="All Shops"
                             left={() => <Icon name="storefront" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
@@ -74,6 +77,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                         />
 
                         <List.Item
+                            style={styles.drawerlistItem}
                             title="My Products"
                             left={() => <Icon name="archive-plus" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
@@ -82,6 +86,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
 
 
                         <List.Item
+                            style={styles.drawerlistItem}
                             title="My Details"
                             left={() => <Icon name="card-account-details" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
@@ -89,6 +94,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                         />
 
                         <List.Item
+                            style={styles.drawerlistItem}
                             title="My Shop Reviews"
                             left={() => <Icon name="storefront" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
@@ -96,6 +102,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                         />
 
                         <List.Item
+                            style={styles.drawerlistItem}
                             title="Delivery Preference"
                             left={() => <Icon name="map-marker" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
@@ -103,6 +110,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                         />
 
                         <List.Item
+                            style={styles.drawerlistItem}
                             title="Help & Support"
                             left={() => <Icon name="help-circle" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
@@ -110,6 +118,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                         />
 
                         <List.Item
+                            style={styles.drawerlistItem}
                             title="Refer & Earn"
                             left={() => <FIcon name="money-bill-1" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
@@ -117,6 +126,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                         />
 
                         <List.Item
+                            style={styles.drawerlistItem}
                             title="Change Language"
                             left={() => <FIcon name="language" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
@@ -124,6 +134,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                         />
 
                         <List.Item
+                            style={styles.drawerlistItem}
                             title="Farming Tips"
                             left={() => <Icon name="lightbulb-outline" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
@@ -145,6 +156,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
         </View>
     );
 };
+
 
 const styles = StyleSheet.create({
     overlayContainer: {
@@ -196,6 +208,11 @@ const styles = StyleSheet.create({
         backgroundColor: "#DA2428",
         marginBottom: 20,
     },
+    drawerlistItem: {
+        borderBottomWidth: 1,
+        borderColor: "#ddd",
+        fontSize: 12
+    }
 });
 
 export default CustomDrawer;

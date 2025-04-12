@@ -231,8 +231,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primaryColor,
   },
   declineBtn: {
-    borderColor: "#ff0000",
-
+    borderColor: "#DA2825",
   },
   declineBtntext: {
     color: "#ff0000"

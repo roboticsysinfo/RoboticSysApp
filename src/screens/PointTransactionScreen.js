@@ -1,42 +1,45 @@
-
 import React, { useEffect } from "react";
-import { View, FlatList, StyleSheet, Image } from "react-native";
+import { View, FlatList, StyleSheet, Image, SectionList } from "react-native";
 import { Text, ActivityIndicator, Card } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPointTransactions } from "../redux/slices/rewardSlice";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import coinIcon from "../assets/coin.png"
-
+import coinIcon from "../assets/coin.png";
 
 const borderColors = {
-  referral: "#2ECC71",         // Fresh green - trust & success
-  redeem: "#E74C3C",           // Soft red - action
-  daily_stay: "#3498DB",       // Cool blue - engagement
-  daily_share: "#F39C12",      // Warm orange - activity
-  daily_login: "#F1C40F",      // Bright golden - reward
-  self_register: "#9B59B6",    // Purple - action/self effort
-  new_product_added: "#1ABC9C" // Teal - newness
+  referral: "#2ECC71", // Fresh green - trust & success
+  redeem: "#E74C3C", // Soft red - action
+  daily_stay: "#3498DB", // Cool blue - engagement
+  daily_share: "#F39C12", // Warm orange - activity
+  daily_login: "#F1C40F", // Bright golden - reward
+  self_register: "#9B59B6", // Purple - action/self effort
+  new_product_added: "#1ABC9C", // Teal - newness
 };
 
-
-
 const PointTransactionScreen = () => {
-
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { pointsTransactions, status, error } = useSelector((state) => state.reward);
 
-  const farmerId = user?.id
-
-  console.log("farmer id", farmerId)
-  console.log("points transaction", pointsTransactions);
-
+  const farmerId = user?.id;
 
   useEffect(() => {
     if (farmerId) {
       dispatch(fetchPointTransactions(farmerId));
     }
   }, [dispatch, farmerId]);
+
+  // Function to group transactions by date
+  const groupTransactionsByDate = (transactions) => {
+    return transactions.reduce((acc, transaction) => {
+      const date = new Date(transaction.createdAt).toLocaleDateString(); // Format date to group by
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(transaction);
+      return acc;
+    }, {});
+  };
 
   const renderItem = ({ item }) => {
     return (
@@ -53,6 +56,12 @@ const PointTransactionScreen = () => {
     );
   };
 
+  const renderSectionHeader = ({ section: { title } }) => (
+    <View style={styles.sectionHeader}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+    </View>
+  );
+
   if (status === "loading") {
     return <ActivityIndicator style={{ marginTop: 30 }} />;
   }
@@ -61,12 +70,17 @@ const PointTransactionScreen = () => {
     return <Text style={{ margin: 20, color: "red" }}>{error}</Text>;
   }
 
+  // Group transactions by date
+  const groupedTransactions = Object.entries(groupTransactionsByDate(pointsTransactions)).map(
+    ([date, transactions]) => ({
+      title: date, // Use the formatted date as section title
+      data: transactions,
+    })
+  );
+
   return (
-
     <>
-
       <View style={styles.header}>
-
         <Image source={coinIcon} style={styles.coinIcon} />
         <Text style={styles.totalPoints}>{user?.points || 0} Points</Text>
       </View>
@@ -77,21 +91,21 @@ const PointTransactionScreen = () => {
           <View key={type} style={styles.legendItem}>
             <View style={[styles.dot, { backgroundColor: color }]} />
             <Text style={styles.legendLabel}>
-              {type.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
+              {type.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
             </Text>
           </View>
         ))}
       </View>
 
-      <FlatList
-        data={pointsTransactions}
+      {/* Render grouped transactions */}
+      <SectionList
+        sections={groupedTransactions}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
+        renderSectionHeader={renderSectionHeader}
         contentContainerStyle={styles.list}
       />
-
     </>
-
   );
 };
 
@@ -127,7 +141,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
     paddingBottom: 0,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   totalPoints: {
     fontSize: 32,
@@ -144,7 +158,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomLeftRadius: 50,
     borderBottomRightRadius: 50,
-    elevation: 2
+    elevation: 2,
   },
   legendItem: {
     flexDirection: "row",
@@ -162,5 +176,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#555",
   },
-
+  sectionHeader: {
+    backgroundColor: "#f1f1f1",
+    paddingVertical: 10,
+    paddingLeft: 16,
+  },
+  sectionTitle: {
+    fontWeight: "bold",
+    fontSize: 18,
+    color: "#333",
+  },
 });

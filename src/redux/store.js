@@ -12,7 +12,8 @@ import adminReducer from "../redux/slices/adminSlice";
 import redeemProductsReducer from "../redux/slices/redeemProductSlice";
 import weatherReducer from "../redux/slices/weatherSlice";
 import rewardReducer from "../redux/slices/rewardSlice";
-import farmingTipsReducer from "../redux/slices/farmingTipsSlice"
+import farmingTipsReducer from "../redux/slices/farmingTipsSlice";
+import familyFarmerReducer from "../redux/slices/familyFarmerSlice"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { persistStore, persistReducer } from "redux-persist";
 
@@ -30,8 +31,9 @@ const persistConfig = {
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 
 const store = configureStore({
+
   reducer: {
-    auth: persistedAuthReducer, // Auth reducer ko persist kiya gaya hai
+    auth: persistedAuthReducer, // Auth reducer persist 
     weather: weatherReducer,
     language: languageReducer,
     products: productsReducer,
@@ -44,8 +46,10 @@ const store = configureStore({
     adminData: adminReducer,
     redeemProducts: redeemProductsReducer,
     reward: rewardReducer,
-    farmingTips: farmingTipsReducer
+    farmingTips: farmingTipsReducer,
+    familyfarmer: familyFarmerReducer
   },
+  
   devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
