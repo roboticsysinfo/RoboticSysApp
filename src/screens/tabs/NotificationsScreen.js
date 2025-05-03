@@ -2,16 +2,18 @@ import React, { useEffect, useState } from "react";
 import { View, FlatList, StyleSheet, Image } from "react-native";
 import { Text, List } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import noNotification from "../../assets/no_notification.jpg";
+import noNotification from "../../assets/no_notification.png";
 import { fetchNotifications, markNotificationAsRead } from "../../redux/slices/notificationSlice";
 import moment from "moment";
 import { useNavigation } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const NotificationsScreen = () => {
 
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const {t} = useTranslation();
   const notifications = useSelector((state) => state.notifications.items);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -35,9 +37,9 @@ const NotificationsScreen = () => {
 
         <View style={styles.emptyContainer}>
           <Image source={noNotification} style={styles.image} />
-          <Text style={styles.emptyTitle}>No Notifications</Text>
+          <Text style={styles.emptyTitle}>{t("No Notifications")}</Text>
           <Text style={styles.emptySubtitle}>
-            We’ll let you know when there will be something to update you.
+            {t("We’ll let you know when there will be something to update you.")}
           </Text>
         </View>
 
@@ -72,9 +74,9 @@ const NotificationsScreen = () => {
                 styles.notificationList,
                 { backgroundColor: item.read ? "#fff" : "#f0f0f0" }, // ⬅️ bg change
               ]}
-              title={`From: ${item.userName}`}
+              title={`${t("From")}: ${item.userName}`}
               titleStyle={styles.title}
-              description={item.message}
+              description={t(item.message)}
               descriptionStyle={styles.description}
               left={() => (
                 <Image
@@ -112,7 +114,7 @@ const styles = StyleSheet.create({
 
   emptyContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
 
-  image: { width: 150, height: 100, marginBottom: 16 },
+  image: { width: 250, height: 250, marginBottom: 16, resizeMode: "contain" },
 
   emptyTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 8 },
 

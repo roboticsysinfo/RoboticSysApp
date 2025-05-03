@@ -25,11 +25,7 @@ export const getRequestsForFarmer = createAsyncThunk(
   async (farmerId, { rejectWithValue }) => {
     try {
 
-        console.log("farmer id redux", farmerId)
-
       const response = await api.get(`/family-farmer-requests/${farmerId}`);
-
-      console.log("api response redux get farmer request by id", response.data)
 
       return response.data;
     } catch (error) {
@@ -37,6 +33,7 @@ export const getRequestsForFarmer = createAsyncThunk(
     }
   }
 );
+
 
 // Get all requests (Admin use)
 export const getAllFamilyRequests = createAsyncThunk(
@@ -50,6 +47,7 @@ export const getAllFamilyRequests = createAsyncThunk(
     }
   }
 );
+
 
 // Update request status (accept/reject)
 export const updateRequestStatus = createAsyncThunk(
@@ -65,6 +63,7 @@ export const updateRequestStatus = createAsyncThunk(
     }
   }
 );
+
 
 const familyFarmerSlice = createSlice({
   name: 'familyfarmer',

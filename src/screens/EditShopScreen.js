@@ -7,12 +7,14 @@ import { launchImageLibrary } from "react-native-image-picker";
 import api from '../services/api';
 import { useNavigation } from '@react-navigation/native';
 import { Dropdown } from 'react-native-element-dropdown';
+import { useTranslation } from 'react-i18next';
 
 
 const EditShopScreen = ({ route }) => {
     const { shopId } = route.params;
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const {t} = useTranslation();
     const { shop } = useSelector(state => state.shop);
 
 
@@ -169,7 +171,7 @@ const EditShopScreen = ({ route }) => {
                 <TextInput
                     mode='outlined'
                     style={styles.textInput}
-                    label="Shop Name"
+                    label={t("Shop Name")}
                     value={formData.shop_name}
                     onChangeText={text => setFormData(prev => ({ ...prev, shop_name: text }))}
                 />
@@ -177,7 +179,7 @@ const EditShopScreen = ({ route }) => {
                 <TextInput
                     mode='outlined'
                     style={styles.textInput}
-                    label="Shop Address"
+                    label={t("Shop Address")}
                     value={formData.shop_address} onChangeText={text => setFormData(prev => ({ ...prev, shop_address: text }))}
                 />
 
@@ -187,7 +189,7 @@ const EditShopScreen = ({ route }) => {
                     value={formData.state}
                     labelField="label"
                     valueField="value"
-                    placeholder="Select State"
+                    placeholder={t("Select State")}
                     onChange={item => handleStateChange(item.value)}
                 />
 
@@ -198,14 +200,14 @@ const EditShopScreen = ({ route }) => {
                     value={formData.city_district}
                     labelField="label"
                     valueField="value"
-                    placeholder="Select City/District"
+                    placeholder={t("Select City/District")}
                     onChange={item => setFormData(prevState => ({ ...prevState, city_district: item.value }))}
                 />
 
                 <TextInput
                     mode='outlined'
                     style={styles.textInput}
-                    label="Village"
+                    label={t("Village")}
                     value={formData.village_name}
                     onChangeText={text => setFormData(prev => ({ ...prev, village_name: text }))}
                 />
@@ -213,7 +215,7 @@ const EditShopScreen = ({ route }) => {
                 <TextInput
                     mode='outlined'
                     style={styles.textInput}
-                    label="Phone Number"
+                    label={t("Phone Number")}
                     keyboardType="phone-pad"
                     value={formData.phoneNumber}
                     onChangeText={text => setFormData(prev => ({ ...prev, phoneNumber: text }))}
@@ -222,7 +224,7 @@ const EditShopScreen = ({ route }) => {
                 <TextInput
                     mode='outlined'
                     style={styles.textInput}
-                    label="WhatsApp Number"
+                    label={t("Whatsapp Number")}
                     keyboardType="phone-pad"
                     value={formData.whatsappNumber}
                     onChangeText={text => setFormData(prev => ({ ...prev, whatsappNumber: text }))}
@@ -230,28 +232,28 @@ const EditShopScreen = ({ route }) => {
 
                 <Dropdown
                     style={styles.dropdownMenu}
-                    data={[{ label: "Fixed Price", value: "fixed_price" }, { label: "Negotiation Price", value: "negotiation_price" }]}
+                    data={[{ label: t("Fixed Price"), value: "fixed_price" }, { label: t("Negotiation Price"), value: "negotiation_price" }]}
                     labelField="label"
                     valueField="value"
                     value={formData.pricing_preference}
-                    placeholder="Select Pricing Preference"
+                    placeholder={t("Select Pricing Preference")}
                     onChange={item => setFormData(prev => ({ ...prev, pricing_preference: item.value }))}
                 />
 
                 <Dropdown
                     style={styles.dropdownMenu}
-                    data={[{ label: "Retail Customers", value: "retail_customers" }, { label: "Wholesalers", value: "wholesalers" }, { label: "Restaurants", value: "restaurants" }, { label: "Hotels", value: "hotels" }]}
+                    data={[{ label: t("Retail Customers"), value: "retail_customers" }, { label: t("Wholesalers"), value: "wholesalers" }, { label: t("Restaurants"), value: "restaurants" }, { label: t("Hotels"), value: "hotels" }]}
                     labelField="label"
                     valueField="value"
                     value={formData.preferred_buyers}
-                    placeholder="Select Preferred Buyers"
+                    placeholder={t("Select Preferred Buyers")}
                     onChange={item => setFormData(prev => ({ ...prev, preferred_buyers: item.value }))}
                 />
 
                 <TextInput
                     mode='outlined'
                     style={styles.textinputTextarea}
-                    label="Shop Description"
+                    label={t("Shop Description")}
                     value={formData.shop_description}
                     onChangeText={text => setFormData(prev => ({ ...prev, shop_description: text }))}
                 />
@@ -260,8 +262,8 @@ const EditShopScreen = ({ route }) => {
                 {formData.shop_profile_image && (
                     <Image source={{ uri: formData.shop_profile_image }} style={styles.imagePreview} />
                 )}
-                <Button mode="outlined" onPress={pickShopProfileImage}>
-                    Upload Shop Profile Image
+                <Button mode="outlined" onPress={pickShopProfileImage} style={{marginBottom: 20}}>
+                    {t("Upload Shop Profile Image")}
                 </Button>
 
                 {/* Shop Cover Image */}
@@ -269,11 +271,11 @@ const EditShopScreen = ({ route }) => {
                     <Image source={{ uri: formData.shop_cover_image }} style={styles.imagePreview} />
                 )}
                 <Button mode="outlined" onPress={pickShopCoverImage}>
-                    Upload Shop Cover Image
+                    {t("Upload Shop Cover Image")}
                 </Button>
 
 
-                <Button style={{marginBottom: 60 , marginTop: 20}} mode="contained" onPress={handleSubmit}>Update Shop</Button>
+                <Button style={{marginBottom: 60 , marginTop: 20, paddingVertical: 8,}} mode="contained" onPress={handleSubmit}>{t("Update Shop")}</Button>
 
             </ScrollView>
         </KeyboardAvoidingView>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useTransition } from 'react';
 import { View, Image, StyleSheet, ScrollView, ToastAndroid, Alert } from 'react-native';
 import { Button, Text, Card, Avatar, Divider, ActivityIndicator } from 'react-native-paper';
 import { COLORS } from '../../../theme';
@@ -6,11 +6,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deleteShop, fetchShopById } from '../../redux/slices/shopSlice';
 import { REACT_APP_BASE_URI } from "@env";
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 const ShopScreen = () => {
 
   const dispatch = useDispatch()
   const navigation = useNavigation()
+  const { t, i18n } = useTranslation();
   const { shop, status, error } = useSelector((state) => state.shop);
   const { user } = useSelector((state) => state.auth);
   const farmerId = user?.id;
@@ -25,19 +27,19 @@ const ShopScreen = () => {
   // Handle product deletion
   const handleDeleteShop = (shopId) => {
     Alert.alert(
-      "Confirm Deletion",
-      "Are you sure you want to delete this Shop?",
+      t("Confirm Deletion"),
+      t("Are you sure you want to delete this Shop?"),
       [
         {
-          text: "No",
+          text: t("No"),
           onPress: () => console.log("Deletion Cancelled"),
           style: "cancel"
         },
         {
-          text: "Yes",
+          text: t("Yes"),
           onPress: () => {
             dispatch(deleteShop(shopId));
-            ToastAndroid.show("Shop Deleted Successfully!", ToastAndroid.SHORT);
+            ToastAndroid.show(t("Shop Deleted Successfully!"), ToastAndroid.SHORT);
           }
         }
       ]
@@ -46,7 +48,7 @@ const ShopScreen = () => {
 
 
   if (status === "loading") {
-    return <ActivityIndicator style={{marginTop: 30}} size="large" color={COLORS.primaryColor} />;
+    return <ActivityIndicator style={{ marginTop: 30 }} size="large" color={COLORS.primaryColor} />;
   }
 
   if (status === "failed") {
@@ -63,17 +65,25 @@ const ShopScreen = () => {
 
       <ScrollView>
 
-        <Image source={{ uri: `${REACT_APP_BASE_URI}${shop?.shop_cover_image}` }} style={styles.coverImage} />
+        <Image
+          source={{
+            uri: `${REACT_APP_BASE_URI.replace(/\/$/, '')}/${shop?.shop_cover_image?.replace(/^\//, '')}`,
+          }}
+          style={styles.coverImage}
+        />
 
-        <Card style={styles.profileCard}>
-          <Card.Title
-            title={shop?.shop_name}
-            left={() => <Avatar.Image size={50} source={{ uri: `${REACT_APP_BASE_URI}${shop?.shop_profile_image}` }} />}
-          />
-        </Card>
+        <View style={styles.profileCard}>
+
+          <Avatar.Image size={70} source={{ 
+            uri: `${REACT_APP_BASE_URI.replace(/\/$/, '')}/${shop?.shop_profile_image?.replace(/^\//, '')}`
+          }} />
+
+          <Text style={styles.shopNameText}>{shop?.shop_name}</Text>
+
+        </View>
 
         <View style={styles.section}>
-          <Text variant="titleLarge" style={styles.sectionTitle}>About</Text>
+          <Text variant="titleLarge" style={styles.sectionTitle}>{t("About Shop")}</Text>
           <Divider />
           <Text variant="bodyMedium" style={styles.paragraph}>
             {shop?.shop_description}
@@ -81,26 +91,26 @@ const ShopScreen = () => {
         </View>
 
         <View style={styles.section}>
-          <Text variant="titleLarge" style={styles.sectionTitle}>Address Details</Text>
+          <Text variant="titleLarge" style={styles.sectionTitle}>{t("Address Details")}</Text>
           <Divider />
 
           <View style={styles.flexSection}>
-            <Text>Address:</Text>
+            <Text>{t("Address")}:</Text>
             <Text>{shop?.shop_address}</Text>
           </View>
 
           <View style={styles.flexSection}>
-            <Text>Phone Number:</Text>
+            <Text>{t("Phone Number")}:</Text>
             <Text>{shop?.phoneNumber}</Text>
           </View>
 
           <View style={styles.flexSection}>
-            <Text>WhatsApp Number:</Text>
+            <Text>{t("WhatsApp Number")}:</Text>
             <Text>{shop?.whatsappNumber}</Text>
           </View>
 
           <View style={styles.flexSection}>
-            <Text>State:</Text>
+            <Text>{t("State")}:</Text>
             <Text>{shop?.state}</Text>
           </View>
 
@@ -110,7 +120,7 @@ const ShopScreen = () => {
           </View>
 
           <View style={styles.flexSection}>
-            <Text>Village:</Text>
+            <Text>{t("Village")}:</Text>
             <Text>{shop?.village_name}</Text>
           </View>
 
@@ -121,12 +131,12 @@ const ShopScreen = () => {
           <Text variant="titleLarge" style={styles.sectionTitle}>Other Details</Text>
           <Divider />
           <View style={styles.flexSection}>
-            <Text>Preferred Buyers :</Text>
+            <Text>{t("Preferred Buyers")} :</Text>
             <Text>{shop?.preferred_buyers}</Text>
           </View>
 
           <View style={styles.flexSection}>
-            <Text>Pricing Preference :</Text>
+            <Text>{t("Pricing Preference")} :</Text>
             <Text>{shop?.pricing_preference}</Text>
           </View>
 
@@ -137,14 +147,11 @@ const ShopScreen = () => {
           <Button
             style={styles.updateBtn}
             mode="contained"
-            onPress={() => navigation.navigate('Edit Shop', { shopId: shop._id })}
+            onPress={() => navigation.navigate(t('Edit Shop'), { shopId: shop._id })}
           >
-            Update Shop Details
+            {t("Update Shop Details")}
           </Button>
 
-          <Button style={styles.deleteBtn} mode="outlined" onPress={() => handleDeleteShop(shop?._id)} >
-            <Text style={styles.deleteBtnText}>Delete Shop</Text>
-          </Button>
 
         </View>
 
@@ -157,8 +164,6 @@ const ShopScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center', // Vertically center
-    alignItems: 'center',      // Horizontally center
     backgroundColor: '#f0f0f0', // Optional: Set background color
   },
   flexSection: {
@@ -183,15 +188,25 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     marginBottom: 10,
-    fontSize: 18
+    fontWeight: "bold"
   },
   deleteBtnText: { color: "#ff0000" },
 
   profileCard: {
-    margin: 10,
     borderRadius: 0,
     backgroundColor: "#fff",
-    fontWeight: "600"
+    fontWeight: "600",
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#efefef"
+  },
+
+  shopNameText: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginLeft: 10
   },
   section: {
     padding: 20,

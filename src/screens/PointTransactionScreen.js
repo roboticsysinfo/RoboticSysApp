@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchPointTransactions } from "../redux/slices/rewardSlice";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import coinIcon from "../assets/coin.png";
+import { useTranslation } from "react-i18next";
 
 const borderColors = {
   referral: "#2ECC71", // Fresh green - trust & success
@@ -14,14 +15,22 @@ const borderColors = {
   daily_login: "#F1C40F", // Bright golden - reward
   self_register: "#9B59B6", // Purple - action/self effort
   new_product_added: "#1ABC9C", // Teal - newness
+  shop_review: "orange",
+  points_upgrade: "gold"
 };
 
 const PointTransactionScreen = () => {
+  
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+  const { t } = useTranslation();
+  const { user, farmerDetails } = useSelector((state) => state.auth);
   const { pointsTransactions, status, error } = useSelector((state) => state.reward);
 
+
   const farmerId = user?.id;
+  const points = farmerDetails?.points
+
+  console.log("points", points)
 
   useEffect(() => {
     if (farmerId) {
@@ -46,10 +55,10 @@ const PointTransactionScreen = () => {
       <Card style={[styles.card, { borderLeftColor: borderColors[item.type] || "#ccc" }]}>
         <Card.Content>
           <Text variant="titleMedium" style={styles.points}>
-            {item.points > 0 ? `+${item.points}` : item.points} points
+            {item.points > 0 ? `+${item.points}` : item.points} {t('points')}
           </Text>
-          <Text>{item.type.replace("_", " ").toUpperCase()}</Text>
-          <Text>{item.description}</Text>
+          <Text>{t(item.type.replace("_", " ").toUpperCase())}</Text>
+          <Text>{t(item.description)}</Text>
           <Text style={styles.date}>{new Date(item.createdAt).toLocaleString()}</Text>
         </Card.Content>
       </Card>
@@ -82,7 +91,7 @@ const PointTransactionScreen = () => {
     <>
       <View style={styles.header}>
         <Image source={coinIcon} style={styles.coinIcon} />
-        <Text style={styles.totalPoints}>{user?.points || 0} Points</Text>
+        <Text style={styles.totalPoints}>{points || 0} {t('points')}</Text>
       </View>
 
       {/* Color legend */}
@@ -91,7 +100,7 @@ const PointTransactionScreen = () => {
           <View key={type} style={styles.legendItem}>
             <View style={[styles.dot, { backgroundColor: color }]} />
             <Text style={styles.legendLabel}>
-              {type.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
+              {t(type.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase()))}
             </Text>
           </View>
         ))}

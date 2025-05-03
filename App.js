@@ -6,6 +6,7 @@ import { DefaultTheme, PaperProvider } from "react-native-paper";
 import { COLORS } from "./theme";
 import Toast, { BaseToast } from 'react-native-toast-message';
 import StayTimerProvider from "./src/components/StayTimerProvider";
+import ChangeLanguageProvider from "./src/components/ChangeLanguageProvider";
 
 
 const theme = {
@@ -36,11 +37,14 @@ const theme = {
 
 
 export default function App() {
+
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <PaperProvider theme={theme}>
           <StayTimerProvider /> 
+          <ChangeLanguageProvider />
           <AppNavigator />
           <Toast  config={toastConfig} />
         </PaperProvider>

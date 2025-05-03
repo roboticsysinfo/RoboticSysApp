@@ -30,6 +30,8 @@ export const registerFarmer = createAsyncThunk(
   }
 );
 
+
+
 // Get Farmer by ID (Separate state for farmer details)
 export const getFarmerById = createAsyncThunk(
   "auth/getFarmerById",
@@ -55,6 +57,7 @@ export const updateFarmerById = createAsyncThunk(
     }
   }
 );
+
 
 // Send OTP to Farmer
 export const sendOTP = createAsyncThunk("auth/sendOTP", async (phoneNumber, { rejectWithValue }) => {

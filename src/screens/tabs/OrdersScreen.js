@@ -6,15 +6,19 @@ import { ActivityIndicator, Button, Card } from 'react-native-paper';
 import { COLORS } from '../../../theme';
 import moment from 'moment';
 import noOrder from "../../assets/noOrder.png";
+import { useTranslation } from 'react-i18next';
 
 
 const OrdersScreen = () => {
-  
+
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
   const { requests: orders, loading, error } = useSelector((state) => state.requestOrder);
   const { user } = useSelector((state) => state.auth);
   const farmerId = user?.id;
+  const { t, i18n } = useTranslation();
+  const language = useSelector((state) => state.language.language);
+
 
   const loadOrders = async () => {
     setRefreshing(true);
@@ -28,13 +32,18 @@ const OrdersScreen = () => {
     }
   }, [farmerId]);
 
+  // Update language
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
+
   const renderOrder = ({ item, index }) => <OrderCard key={item?._id || index} order={item} />;
 
   return (
 
     <View style={{ flex: 1 }}>
 
-      {loading && <Text style={{textAlign: 'center' , marginTop: 20}}>Loading...</Text>}
+      {loading && <Text style={{ textAlign: 'center', marginTop: 20 }}>{t("Loading")}...</Text>}
 
       {error && orders?.length === 0 && (
         <Text style={styles.error}>
@@ -48,12 +57,12 @@ const OrdersScreen = () => {
 
         <View style={styles.emptyContainer}>
           <Image source={noOrder} style={styles.image} />
-          <Text style={styles.emptyTitle}>No Orders Yet</Text>
+          <Text style={styles.emptyTitle}>{t('No Orders Yet')}</Text>
           <Text style={styles.emptySubtitle}>
-            We’ll let you know when there will be something to update you.
+            {t("We’ll let you know when there will be something to update you.")}
           </Text>
         </View>
-        
+
 
       ) : (
         <FlatList
@@ -72,9 +81,18 @@ const OrdersScreen = () => {
 
 // OrderCard Component
 const OrderCard = ({ order }) => {
+  const { t, i18n } = useTranslation();
+  const language = useSelector((state) => state.language.language);
   const dispatch = useDispatch();
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const toggleDropdown = () => setIsDropdownVisible(!isDropdownVisible);
+
+
+  // Update language
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
+
 
   // Format Date using Moment.js
   const formattedDate = order?.createdAt
@@ -96,19 +114,19 @@ const OrderCard = ({ order }) => {
 
   const handleApprovedOrder = (orderId) => {
     Alert.alert(
-      "Confirm Approval",
-      "Are you sure you want to accept this order?",
+      t("Confirm Approval"),
+      t("Are you sure you want to accept this order?"),
       [
         {
-          text: "No",
+          text: t("No"),
           onPress: () => console.log("Order approval cancelled"),
           style: "cancel"
         },
         {
-          text: "Yes",
+          text: t("Yes"),
           onPress: () => {
             dispatch(approveOrderRequest(orderId));
-            ToastAndroid.show("Order Approved Successfully!", ToastAndroid.SHORT);
+            ToastAndroid.show(t("Order Approved Successfully!"), ToastAndroid.SHORT);
           }
         }
       ]
@@ -117,19 +135,19 @@ const OrderCard = ({ order }) => {
 
   const handleCancelOrder = (orderId) => {
     Alert.alert(
-      "Confirm Cancellation",
-      "Are you sure you want to cancel this order?",
+      t("Confirm Cancellation"),
+      t("Are you sure you want to cancel this order?"),
       [
         {
-          text: "No",
+          text: t("No"),
           onPress: () => console.log("Order cancellation cancelled"),
           style: "cancel"
         },
         {
-          text: "Yes",
+          text: t("Yes"),
           onPress: () => {
             dispatch(cancelOrderRequest(orderId));
-            ToastAndroid.show("Order Cancelled Successfully!", ToastAndroid.SHORT);
+            ToastAndroid.show(t("Order Cancelled Successfully!"), ToastAndroid.SHORT);
           }
         }
       ]
@@ -142,17 +160,17 @@ const OrderCard = ({ order }) => {
 
       <Card.Content>
 
-        <Text style={styles.header}>Order ID: {order?._id || "N/A"}</Text>
+        <Text style={styles.header}>{t("Order ID")}: {order?._id || "N/A"}</Text>
 
-        <Text style={styles.productName}>Product: {order?.product_id?.name || "Unknown"}</Text>
+        <Text style={styles.productName}>{t("Product")}: {order?.product_id?.name || "Unknown"}</Text>
 
         <Text style={[styles.status, getStatusStyle(order?.status)]}>
-          Status: {order?.status || "Pending"}
+          {t("Status")}: {order?.status || t("pending")}
         </Text>
 
-        <Text style={styles.priceText}>Price Per Unit: ₹{order?.product_id?.price_per_unit || "0"} | Unit: ₹{order?.product_id?.unit || "N/A"}</Text>
+        <Text style={styles.priceText}>{t("Price Per Unit")}: ₹{order?.product_id?.price_per_unit || "0"} | Unit: ₹{order?.product_id?.unit || "N/A"}</Text>
 
-        <Text style={styles.dateTime}>Date: {formattedDate}</Text>
+        <Text style={styles.dateTime}>{t("Date")}: {formattedDate}</Text>
 
         {order?.status?.toLowerCase() === "pending" && (
           <View style={styles.buttonContainer}>
@@ -161,14 +179,16 @@ const OrderCard = ({ order }) => {
               onPress={() => handleApprovedOrder(order?._id)}
               style={[styles.button, styles.approveBtn]}
             >
-              Approve
+              {t("Confirm")}
             </Button>
             <Button
               mode="outlined"
               onPress={() => handleCancelOrder(order?._id)}
               style={[styles.button, styles.declineBtn]}
             >
-              <Text style={styles.declineBtntext}>Cancel</Text>
+              <Text style={styles.declineBtntext}>
+                {t("Reject")}
+              </Text>
             </Button>
           </View>
         )}
@@ -180,10 +200,10 @@ const OrderCard = ({ order }) => {
 
         {isDropdownVisible && (
           <View style={styles.dropdown}>
-            <Text style={styles.dropdownText}>Customer Name: {order?.customer_id?.name || "N/A"}</Text>
-            <Text style={styles.dropdownText}>Address: {order?.customer_id.address || "N/A"}</Text>
-            <Text style={styles.dropdownText}>Quantity Requested: {order?.quantity_requested || "0"}</Text>
-            <Text style={styles.dropdownText}>Note: {order?.notes || "N/A"}</Text>
+            <Text style={styles.dropdownText}>{t("Customer Name")}: {order?.customer_id?.name || "N/A"}</Text>
+            <Text style={styles.dropdownText}>{t("Address")}: {order?.customer_id.address || "N/A"}</Text>
+            <Text style={styles.dropdownText}>{t("Quantity Requested")}: {order?.quantity_requested || "0"}</Text>
+            <Text style={styles.dropdownText}>{t("Note")}: {order?.notes || "N/A"}</Text>
           </View>
         )}
 
@@ -275,7 +295,7 @@ const styles = StyleSheet.create({
   },
   emptyContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
 
-  image: { width: 250, height: 250, marginBottom: 16 , resizeMode: "contain"},
+  image: { width: 250, height: 250, marginBottom: 16, resizeMode: "contain" },
 
   emptyTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 8 },
 

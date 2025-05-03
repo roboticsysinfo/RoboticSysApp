@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { COLORS } from '../../theme';
+import { COLORS, FONTS } from '../../theme';
 import  appLogo  from "../../src/assets/kg-logo.jpg"
 
 const SplashScreen = ({ navigation }) => {
@@ -19,7 +19,8 @@ const SplashScreen = ({ navigation }) => {
           source={appLogo}
           style={styles.headerImage}
         />
-        <Text style={styles.text}>Kissan Growth</Text>
+        {/* <Text style={styles.text}>Kissan Growth</Text> */}
+        <Text style={styles.subtext}>Customer App</Text>
     </View>
 
   );
@@ -37,6 +38,7 @@ const styles = StyleSheet.create({
   },
 
   text: { fontSize: 38, fontWeight: 'bold', color: '#fff' },
+  subtext: { fontSize: 24, fontWeight: 'bold', color: '#fff', fontFamily: FONTS.bold },
 
 });
 

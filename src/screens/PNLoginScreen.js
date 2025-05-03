@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { sendOTP } from '../redux/slices/authSlice'; // Import Redux action
 
 const PNLoginScreen = () => {
+
   const { t, i18n } = useTranslation();
   const [phoneNumber, setphoneNumber] = useState('');
   const navigation = useNavigation();
@@ -22,24 +23,6 @@ const PNLoginScreen = () => {
     i18n.changeLanguage(language);
   }, [language]);
 
-  // const handleSendOTP = () => {
-
-  //   if (!phoneNumber || phoneNumber.length !== 10) {
-  //     Alert.alert("Error", t('Please enter a valid phone number.'));
-  //     return;
-  //   }
-
-  //   dispatch(sendOTP(phoneNumber)).then((result) => {
-
-  //     if (sendOTP.fulfilled.match(result)) {
-  //       navigation.replace('OTP Verify', { phoneNumber }); // Navigate to OTP screen if successful
-  //     } else {
-  //       Alert.alert("Error", result.payload?.message || t('Cannot Find Phone Number, Please Use Another Number') );
-  //     }
-  //   });
-
-  // };
-
 
   const handleSendOTP = () => {
     if (!phoneNumber || phoneNumber.length !== 10) {
@@ -52,7 +35,7 @@ const PNLoginScreen = () => {
         const { isKYCVerified } = result.payload;
   
         if (!isKYCVerified) {
-          navigation.replace('KYC Pending'); // 🚨 Navigate to KYC pending screen
+          navigation.replace(t('KYC Pending')); // 🚨 Navigate to KYC pending screen
         } else {
           navigation.replace('OTP Verify', { phoneNumber }); // ✅ Verified, go to OTP screen
         }
@@ -64,8 +47,6 @@ const PNLoginScreen = () => {
   };
   
 
-
-
   return (
 
     <View style={styles.container}>
@@ -73,7 +54,7 @@ const PNLoginScreen = () => {
       {/* Logo Section */}
       <View style={styles.logoContainer}>
         <Image source={appLogo} style={styles.logo} />
-        <Text style={styles.title}>{t('Login')}</Text>
+        <Text style={styles.title}>{t('Farmer Login')}</Text>
       </View>
 
       {/* Mobile Number Input */}

@@ -5,10 +5,12 @@ import { getRequestsForFarmer } from '../redux/slices/familyFarmerSlice';
 import { Card } from 'react-native-paper';
 import familyCustomer from "../assets/family-customer.png"
 import { COLORS } from '../../theme';
+import { useTranslation } from 'react-i18next';
 
 const FamilyCustomersList = () => {
 
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { requests, loading, error } = useSelector((state) => state.familyfarmer);
   const { user } = useSelector((state) => state.auth);
   const farmerId = user?.id;
@@ -54,6 +56,7 @@ const FamilyCustomersList = () => {
               <Text style={styles.detailText}>📍 {item.fromCustomer?.address || 'Unknown'}</Text>
               <Text style={styles.detailText}>📞 {item.fromCustomer?.phoneNumber || 'N/A'}</Text>
               <Text style={styles.detailText}>📧 {item.fromCustomer?.email || 'N/A'}</Text>
+              <Text style={styles.detailText}>📧 {t(item.message) || 'N/A'}</Text>
             </View>
             <Text style={styles.dateText}>{new Date(item.createdAt).toLocaleDateString()}</Text>
           </View>
@@ -66,10 +69,10 @@ const FamilyCustomersList = () => {
     <View style={styles.emptyContainer}>
       <Image source={familyCustomer} style={styles.image} />
       <Text style={styles.emptyTitle}>
-        {error ? `Error: ${error}` : 'No Accepted Family Customers Found!'}
+        {error ? `Error: ${error}` : t('No Accepted Family Customers Found!')}
       </Text>
       <Text style={styles.emptySubtitle}>
-        Once someone joins your family, they will appear here.
+          {t("Once someone joins your family, they will appear here.")}
       </Text>
     </View>
   );
@@ -100,6 +103,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    padding: 20
   },
   loader: {
     marginTop: 50,
@@ -118,7 +122,8 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 8
+    marginBottom: 8,
+    textAlign: "center"
   },
   emptySubtitle: {
     fontSize: 14,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { Card, Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
@@ -6,10 +6,14 @@ import { COLORS } from '../../theme';
 import appLogo from "../assets/kg-logo.jpg"
 import HomeWeatherCard from './weather/HomeWeatherCard';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 const OrdersCounts = () => {
 
     const navigation = useNavigation();
+    const { t, i18n } = useTranslation();
+    const language = useSelector((state) => state.language.language);
+
 
     // Assuming your orders slice is named "requestOrder" and contains an array "orders"
     const { requests: orders, loading, error } = useSelector((state) => state.requestOrder);
@@ -26,7 +30,11 @@ const OrdersCounts = () => {
     const acceptedCount = orders.filter(order => order.status === 'accepted').length;
     const cancelledCount = orders.filter(order => order.status === 'cancelled').length;
 
-    
+    // Update language
+    useEffect(() => {
+        i18n.changeLanguage(language);
+    }, [language]);
+
     return (
 
         <View style={styles.ordersInfocontainer}>
@@ -40,21 +48,21 @@ const OrdersCounts = () => {
 
             <Card style={styles.card}>
                 <Card.Content>
-                    <Text style={styles.title}>Pending Orders</Text>
+                    <Text style={styles.title}>{t("pendingOrders")}</Text>
                     <Text style={[styles.count, styles.pending]}>{pendingCount}</Text>
                 </Card.Content>
             </Card>
 
             <Card style={styles.card}>
                 <Card.Content>
-                    <Text style={styles.title}>Accepted Orders</Text>
+                    <Text style={styles.title}>{t("acceptedOrders")}</Text>
                     <Text style={[styles.count, styles.accepted]}>{acceptedCount}</Text>
                 </Card.Content>
             </Card>
 
             <Card style={styles.card}>
                 <Card.Content>
-                    <Text style={styles.title}>Cancelled Orders</Text>
+                    <Text style={styles.title}>{t("cancelledOrders")}</Text>
                     <Text style={[styles.count, styles.cancelled]}>{cancelledCount}</Text>
                 </Card.Content>
             </Card>
@@ -64,7 +72,7 @@ const OrdersCounts = () => {
                 location={cityName}
                 temperature={currentTemp}
                 weatherIcon={icon}
-                onPress={() => navigation.navigate("Weather")}
+                onPress={() => navigation.navigate(t("Weather"))}
             />
 
 

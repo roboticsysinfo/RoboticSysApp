@@ -24,12 +24,17 @@ import { fetchNotifications } from "../../redux/slices/notificationSlice";
 import { getOrderRequestByFarmerId } from "../../redux/slices/orderSlice";
 import { fetchShopById } from "../../redux/slices/shopSlice";
 import { fetchFiveDayForecast, fetchWeatherData } from "../../redux/slices/weatherSlice";
+import { useTranslation } from "react-i18next";
+import MandiPriceSlider from "../../components/MandiPriceSlider";
 
 
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const { t, i18n } = useTranslation();  
+const language = useSelector((state) => state.language.language);  
+
 
   const { user, farmerDetails } = useSelector((state) => state.auth);
   const { shop, status } = useSelector((state) => state.shop);
@@ -46,7 +51,7 @@ const HomeScreen = () => {
   useFocusEffect(
     useCallback(() => {
       dispatch(fetchNotifications());
-      dispatch(getFarmerById());
+      dispatch(getFarmerById(farmerId));
       if (farmerId) {
         dispatch(getOrderRequestByFarmerId(farmerId));
       }
@@ -122,8 +127,10 @@ const HomeScreen = () => {
     );
   };
   
-
-
+  // Update language
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
 
   useEffect(() => {
     getLocationAndFetchWeather();
@@ -153,16 +160,20 @@ const HomeScreen = () => {
 
         <AdminMessagesScreen />
 
+        <MandiPriceSlider />
+
+        <Divider style={styles.divider} />
+
         <View style={styles.actionBtns}>
           <Button
             mode="contained"
             style={styles.actionBtnItem}
             contentStyle={styles.buttonContent}
-            onPress={() => navigation.navigate("Add New Product")}
+            onPress={() => navigation.navigate(t("Add New Product"))}
           >
             <View style={styles.buttonInner}>
               <FIcon name="cart-plus" size={24} style={styles.icon} />
-              <Text style={styles.buttonText}>Add New Product</Text>
+              <Text style={styles.buttonText}>{t('addNewProduct')}</Text>
             </View>
           </Button>
 
@@ -172,7 +183,7 @@ const HomeScreen = () => {
             contentStyle={styles.buttonContent}
             onPress={() =>
               navigation.navigate(
-                shopExists ? "Edit Shop" : "Create Shop",
+                shopExists ? t("Edit Shop") : t("Create Shop"),
                 shopExists ? { shopId: shop._id } : {}
               )
             }
@@ -184,7 +195,7 @@ const HomeScreen = () => {
                 style={styles.icon}
               />
               <Text style={styles.buttonText}>
-                {shopExists ? "Edit Shop" : "Create Shop"}
+                {shopExists ? t("editShop") : t("createShop")}
               </Text>
             </View>
           </Button>
@@ -193,11 +204,11 @@ const HomeScreen = () => {
             mode="contained"
             style={styles.actionBtnItem}
             contentStyle={styles.buttonContent}
-            onPress={() => navigation.navigate("Family Farmer Requests")}
+            onPress={() => navigation.navigate(t("Family Farmer Requests"))}
           >
             <View style={styles.buttonInner}>
               <FIcon name="user-plus" size={24} style={styles.icon} />
-              <Text style={styles.buttonText}>Family Requests</Text>
+              <Text style={styles.buttonText}>{t('familyRequests')}</Text>
             </View>
           </Button>
 
@@ -205,11 +216,11 @@ const HomeScreen = () => {
             mode="contained"
             style={styles.actionBtnItem}
             contentStyle={styles.buttonContent}
-            onPress={() => navigation.navigate("Family Customers List")}
+            onPress={() => navigation.navigate(t("Family Customers List"))}
           >
             <View style={styles.buttonInner}>
               <FIcon name="users" size={24} style={styles.icon} />
-              <Text style={styles.buttonText}>Family Customers List</Text>
+              <Text style={styles.buttonText}>{t('familyCustomersList')}</Text>
             </View>
           </Button>
 

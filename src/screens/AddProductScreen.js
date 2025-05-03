@@ -8,11 +8,13 @@ import { Dropdown } from 'react-native-element-dropdown';
 import DatePicker from 'react-native-date-picker';
 import { useNavigation } from '@react-navigation/native';
 import { fetchCategories } from '../redux/slices/categorySlice';
+import { useTranslation } from 'react-i18next';
 
 const AddProductScreen = () => {
 
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const { t } = useTranslation();
     const { categories } = useSelector(state => state.categories);
 
     const [formData, setFormData] = useState({
@@ -67,10 +69,10 @@ const AddProductScreen = () => {
         dispatch(createProduct(formDataToSend))
             .unwrap()
             .then(() => {
-                ToastAndroid.show('Product Added Successfully!', ToastAndroid.SHORT);
+                ToastAndroid.show(t('Product Added Successfully!'), ToastAndroid.SHORT);
                 navigation.goBack();
             })
-            .catch(error => console.error('Create Product Error:', error));
+            .catch(error => console.error(t('Create Product Error'), error));
     };
 
     return (
@@ -78,7 +80,7 @@ const AddProductScreen = () => {
             
             <TextInput
                 mode='outlined'
-                label="Product Name"
+                label={t("Product Name")}
                 value={formData.name}
                 onChangeText={text => setFormData(prev => ({ ...prev, name: text }))}
                 style={styles.textInput}
@@ -86,17 +88,17 @@ const AddProductScreen = () => {
 
             <Dropdown
                 style={styles.dropdown}
-                data={[{ label: 'Winter', value: 'winter' }, { label: 'Summer', value: 'summer' }]}
+                data={[{ label: t('Winter'), value: 'winter' }, { label: t('Summer'), value: 'summer' }]}
                 value={formData.season}
                 labelField="label"
                 valueField="value"
-                placeholder="Select Season"
+                placeholder={t("Select Season")}
                 onChange={item => setFormData(prev => ({ ...prev, season: item.value }))}
             />
 
             <TextInput
                 mode='outlined'
-                label="Price Per Unit"
+                label={t("Price Per Unit")}
                 keyboardType="numeric"
                 value={formData.price_per_unit}
                 onChangeText={text => setFormData(prev => ({ ...prev, price_per_unit: text }))}
@@ -105,7 +107,7 @@ const AddProductScreen = () => {
 
             <TextInput
                 mode='outlined'
-                label="Quantity"
+                label={t("Quantity")}
                 keyboardType="numeric"
                 value={formData.quantity}
                 onChangeText={text => setFormData(prev => ({ ...prev, quantity: text }))}
@@ -118,7 +120,7 @@ const AddProductScreen = () => {
                 value={formData.unit}
                 labelField="label"
                 valueField="value"
-                placeholder="Select Unit"
+                placeholder={t("Select Unit")}
                 onChange={item => setFormData(prev => ({ ...prev, unit: item.value }))}
             />
 
@@ -128,12 +130,12 @@ const AddProductScreen = () => {
                 value={formData.category_id}
                 labelField="label"
                 valueField="value"
-                placeholder="Select Category"
+                placeholder={t("Select Category")}
                 onChange={item => setFormData(prev => ({ ...prev, category_id: item.value }))}
             />
 
             <Button mode='outlined' onPress={() => setOpenDatePicker(true)}>
-                Select Harvest Date
+                {t("Select Harvest Date")}
             </Button>
 
             <DatePicker
@@ -150,16 +152,16 @@ const AddProductScreen = () => {
 
             <TextInput
                 mode='outlined'
-                label="Product Description"
+                label={t("Product Description")}
                 value={formData.description}
                 onChangeText={text => setFormData(prev => ({ ...prev, description: text }))}
                 style={styles.textArea}
             />
 
             {formData.product_image && <Image source={{ uri: formData.product_image }} style={styles.imagePreview} />}
-            <Button mode='outlined' onPress={pickProductImage}>Upload Product Image</Button>
+            <Button mode='outlined' onPress={pickProductImage}>{t("Upload Product Image")}</Button>
 
-            <Button mode='contained' onPress={handleSubmit} style={styles.submitButton}>Add Product</Button>
+            <Button mode='contained' onPress={handleSubmit} style={styles.submitButton}>{t("Add Product")}</Button>
 
         </ScrollView>
     );

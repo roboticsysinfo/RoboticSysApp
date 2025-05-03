@@ -2,38 +2,42 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Card, Title, Paragraph, Text, Divider } from 'react-native-paper';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next'; // Importing useTranslation hook
 
 const AboutTab = () => {
   const { selectedShop: shop } = useSelector(state => state.shop);
+  const { t } = useTranslation(); // Using useTranslation hook to get the t function for translation
 
   if (!shop) return null;
 
   return (
     <ScrollView style={{ flex: 1 }}>
+
       <Card style={styles.tabContent}>
         <Card.Content>
-          <Title>About the Shop</Title>
+          <Title style={styles.sectionTitle}>{t("About Shop")}</Title>
           <Paragraph>{shop.shop_description || "No description available"}</Paragraph>
         </Card.Content>
       </Card>
 
       <View style={styles.section}>
-        <Text variant="titleLarge" style={styles.sectionTitle}>Address Details</Text>
+        <Text variant="titleLarge" style={styles.sectionTitle}>{t("Address Details")}</Text>
         <Divider />
-        <View style={styles.flexSection}><Text>Address:</Text><Text>{shop?.shop_address}</Text></View>
-        <View style={styles.flexSection}><Text>Phone Number:</Text><Text>{shop?.phoneNumber}</Text></View>
-        <View style={styles.flexSection}><Text>WhatsApp Number:</Text><Text>{shop?.whatsappNumber}</Text></View>
-        <View style={styles.flexSection}><Text>State:</Text><Text>{shop?.state}</Text></View>
-        <View style={styles.flexSection}><Text>City:</Text><Text>{shop?.city_district}</Text></View>
-        <View style={styles.flexSection}><Text>Village:</Text><Text>{shop?.village_name}</Text></View>
+        <View style={styles.flexSection}><Text>{t("Address")}:</Text><Text>{shop?.shop_address}</Text></View>
+        <View style={styles.flexSection}><Text>{t("Phone Number")}:</Text><Text>{shop?.phoneNumber}</Text></View>
+        <View style={styles.flexSection}><Text>{t("WhatsApp Number")}:</Text><Text>{shop?.whatsappNumber}</Text></View>
+        <View style={styles.flexSection}><Text>{t("State")}:</Text><Text>{shop?.state}</Text></View>
+        <View style={styles.flexSection}><Text>{t("City")}:</Text><Text>{shop?.city_district}</Text></View>
+        <View style={styles.flexSection}><Text>{t("Village")}:</Text><Text>{shop?.village_name}</Text></View>
       </View>
 
       <View style={styles.section}>
-        <Text variant="titleLarge" style={styles.sectionTitle}>Other Details</Text>
+        <Text variant="titleLarge" style={styles.sectionTitle}>{t("Other Details")}</Text>
         <Divider />
-        <View style={styles.flexSection}><Text>Preferred Buyers :</Text><Text>{shop?.preferred_buyers}</Text></View>
-        <View style={styles.flexSection}><Text>Pricing Preference :</Text><Text>{shop?.pricing_preference}</Text></View>
+        <View style={styles.flexSection}><Text>{t("Preferred Buyers")} :</Text><Text>{shop?.preferred_buyers}</Text></View>
+        <View style={styles.flexSection}><Text>{t("Pricing Preference")} :</Text><Text>{shop?.pricing_preference}</Text></View>
       </View>
+
     </ScrollView>
   );
 };
@@ -100,7 +104,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     marginBottom: 10,
-    fontSize: 18
+    fontWeight: "bold"
   },
 
   section: {

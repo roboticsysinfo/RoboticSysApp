@@ -14,15 +14,24 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginWithOTP } from '../redux/slices/authSlice'; // Import Redux action
 import { COLORS } from '../../theme';
+import { useTranslation } from 'react-i18next';
+
 
 const OtpScreen = ({ route }) => {
   const [otp, setOtp] = useState(['', '', '', '']);
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const { t, i18n } = useTranslation();
+  const language = useSelector((state) => state.language.language);
   const { loading, error, token } = useSelector((state) => state.auth);
   const phoneNumber = route.params?.phoneNumber; // Get phone number from navigation params
 
   const inputs = useRef([]);
+
+  // Update language
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
 
   const handleChange = (text, index) => {
     const newOtp = [...otp];
@@ -43,18 +52,18 @@ const OtpScreen = ({ route }) => {
 
   const handleVerify = async () => {
     const otpCode = otp.join('');
-    
+
     if (otpCode.length !== 4) {
       ToastAndroid.show('Please enter a 4-digit OTP', ToastAndroid.SHORT);
       return;
     }
-  
+
     dispatch(loginWithOTP({ phoneNumber, otp: otpCode })).then(async (result) => {
       if (loginWithOTP.fulfilled.match(result)) {
         try {
           await AsyncStorage.setItem("token", result.payload.token);
           await AsyncStorage.setItem("farmer", JSON.stringify(result.payload.farmer)); // Fix here
-  
+
           navigation.replace("Dashboard");
         } catch (error) {
           console.error("AsyncStorage Error:", error);
@@ -64,19 +73,19 @@ const OtpScreen = ({ route }) => {
       }
     });
   };
-  
-  
+
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.replace('Login')}>
         <Text style={styles.backText}>←</Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>OTP Verification</Text>
-      <Text style={styles.subtitle}>Enter 4 digit verification code sent to your phone number</Text>
+      <Text style={styles.title}>{t('OTP Verification')}</Text>
+      <Text style={styles.subtitle}>{t('Enter 4 digit verification code sent to your phone number')}</Text>
 
       <View style={styles.otpContainer}>
-        
+
         {otp.map((digit, index) => (
           <TextInput
             key={index}
@@ -96,11 +105,11 @@ const OtpScreen = ({ route }) => {
         <ActivityIndicator size="large" color={COLORS.primaryColor} />
       ) : (
         <TouchableOpacity style={styles.verifyButton} onPress={handleVerify}>
-          <Text style={styles.verifyButtonText}>Verify OTP</Text>
+          <Text style={styles.verifyButtonText}>{t('Verify OTP')}</Text>
         </TouchableOpacity>
       )}
 
-      {error && <Text style={{fontWeight: 600, marginTop: 20, color: "#DA2825"}}>{error}</Text>}
+      {error && <Text style={{ fontWeight: 600, marginTop: 20, color: "#DA2825" }}>{error}</Text>}
 
     </View>
   );

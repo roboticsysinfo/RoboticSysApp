@@ -4,6 +4,7 @@ import { TextInput, Button, Text, ActivityIndicator } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { clearTicketMessage, createHelpSupportTicket } from "../redux/slices/adminSlice";
 import { COLORS } from "../../theme";
+import { useTranslation } from "react-i18next";
 
 
 const HelpSupportScreen = () => {
@@ -12,8 +13,10 @@ const HelpSupportScreen = () => {
     const [message, setMessage] = useState("");
 
     const dispatch = useDispatch();
+    const {t} = useTranslation();
     const { ticketStatus, ticketMessage } = useSelector((state) => state.adminData);
 
+    
     // Inside your component
     useEffect(() => {
         if (ticketMessage) {
@@ -28,7 +31,7 @@ const HelpSupportScreen = () => {
 
     const handleSubmit = () => {
         if (!subject.trim() || !message.trim()) {
-            Alert.alert("Validation", "Please enter both subject and message.");
+            Alert.alert("Validation", t("Please enter both subject and message."));
             return;
         }
         dispatch(createHelpSupportTicket({ subject, message }));
@@ -40,10 +43,10 @@ const HelpSupportScreen = () => {
 
         <View style={styles.container}>
 
-            <Text style={styles.heading}>Raise a Help & Support Ticket</Text>
+            <Text style={styles.heading}>{t("Raise a Help & Support Ticket")}</Text>
 
             <TextInput
-                label="Subject"
+                label={t("Subject")}
                 value={subject}
                 onChangeText={setSubject}
                 mode="outlined"
@@ -51,7 +54,7 @@ const HelpSupportScreen = () => {
             />
 
             <TextInput
-                label="Message"
+                label={t("Message")}
                 value={message}
                 onChangeText={setMessage}
                 mode="outlined"
@@ -68,12 +71,12 @@ const HelpSupportScreen = () => {
                     onPress={handleSubmit}
                     style={styles.button}
                 >
-                    Submit Ticket
+                   {t("Submit Ticket")}
                 </Button>
             )}
 
             {ticketMessage && (
-                <Text style={styles.statusText}>{ticketMessage}</Text>
+                <Text style={styles.statusText}>{t(ticketMessage)}</Text>
             )}
             
         </View>

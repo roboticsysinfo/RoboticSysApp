@@ -1,11 +1,15 @@
 import React from 'react';
 import { FlatList, Text, View, StyleSheet, Image } from 'react-native';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 const FiveDaysForecastSlider = ({ data }) => {
+
+  const { t } = useTranslation();
+
   return (
     <View style={{ paddingHorizontal: 20 }}>
-      <Text style={styles.title}>5-Day Forecast</Text>
+      <Text style={styles.title}>{t("5-Day Forecast")}</Text>
       <FlatList
         horizontal
         data={data}

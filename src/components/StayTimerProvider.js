@@ -1,14 +1,15 @@
-// src/components/StayTimerProvider.js
-import React from "react";
-import useStayTimer from "../hooks/useStayTimer";
-import { useSelector } from "react-redux";
+import React from 'react';
+import { useSelector } from 'react-redux';
+import useStayTimer from '../hooks/useStayTimer';
 
 const StayTimerProvider = () => {
-  const farmer = useSelector((state) => state.auth.farmer);
+  const user = useSelector(state => state.auth.user);
+  const isLoggedIn = !!user;
 
-  useStayTimer(!!farmer); // pass true only if farmer is logged in
+  // if user logged in timer will start
+  useStayTimer(isLoggedIn);
 
-  return null;
+  return null; 
 };
 
 export default StayTimerProvider;

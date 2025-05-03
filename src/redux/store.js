@@ -14,6 +14,7 @@ import weatherReducer from "../redux/slices/weatherSlice";
 import rewardReducer from "../redux/slices/rewardSlice";
 import farmingTipsReducer from "../redux/slices/farmingTipsSlice";
 import familyFarmerReducer from "../redux/slices/familyFarmerSlice"
+import farmerPlanReducer from "../redux/slices/farmerPlanSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { persistStore, persistReducer } from "redux-persist";
 
@@ -47,7 +48,8 @@ const store = configureStore({
     redeemProducts: redeemProductsReducer,
     reward: rewardReducer,
     farmingTips: farmingTipsReducer,
-    familyfarmer: familyFarmerReducer
+    familyfarmer: familyFarmerReducer,
+    farmerPlan: farmerPlanReducer
   },
   
   devTools: process.env.NODE_ENV !== "production",

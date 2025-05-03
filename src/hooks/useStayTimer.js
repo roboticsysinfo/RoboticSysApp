@@ -1,7 +1,5 @@
-// hooks/useStayTimer.js
 import { useEffect, useRef } from "react";
 import { AppState } from "react-native";
-import { useNavigationState } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { rewardDailyPoints } from "../redux/slices/redeemProductSlice";
 
@@ -9,45 +7,67 @@ const useStayTimer = (enabled) => {
   const dispatch = useDispatch();
   const timerRef = useRef(null);
   const appState = useRef(AppState.currentState);
+  const startTimeRef = useRef(null);
+  const hasRewardedRef = useRef(false);
 
   useEffect(() => {
-    if (!enabled) return; // ⛔ do nothing if user not logged in
+    if (!enabled) return;
 
-    const startTimer = () => {
-      timerRef.current = setTimeout(() => {
+    const checkAndReward = () => {
+      const now = Date.now();
+      const diff = now - startTimeRef.current;
+      const fiveMinutes = 5 * 60 * 1000;
+
+      console.log(`⏳ Time spent: ${Math.floor(diff / 1000)}s`);
+
+      if (diff >= fiveMinutes && !hasRewardedRef.current) {
         dispatch(rewardDailyPoints());
-      }, 5 * 60 * 1000); // 5 min
-    };
-
-    const stopTimer = () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+        hasRewardedRef.current = true;
+        console.log("🎉 5 minutes reached, points rewarded");
+      } else {
+        console.log("⏸️ Not enough time yet");
+      }
     };
 
     const handleAppStateChange = (nextAppState) => {
       if (
-        appState.current.match(/active/) &&
-        nextAppState.match(/inactive|background/)
-      ) {
-        stopTimer();
-      } else if (
         appState.current.match(/inactive|background/) &&
         nextAppState === "active"
       ) {
-        startTimer();
+        // App came to foreground: start/resume timer
+        if (!startTimeRef.current) {
+          startTimeRef.current = Date.now();
+          console.log("▶️ Timer started");
+        }
+        // Check if reward is due
+        timerRef.current = setInterval(checkAndReward, 10000); // check every 10s
+      } else if (
+        appState.current === "active" &&
+        nextAppState.match(/inactive|background/)
+      ) {
+        // App going to background: stop timer
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+        console.log("⏹️ Timer paused");
       }
 
       appState.current = nextAppState;
     };
 
-    AppState.addEventListener("change", handleAppStateChange);
-    startTimer();
+    const subscription = AppState.addEventListener("change", handleAppStateChange);
+
+    // Initial launch
+    if (!startTimeRef.current) {
+      startTimeRef.current = Date.now();
+      console.log("🚀 App started, tracking time");
+    }
+    timerRef.current = setInterval(checkAndReward, 10000);
 
     return () => {
-      AppState.removeEventListener("change", handleAppStateChange);
-      stopTimer();
+      clearInterval(timerRef.current);
+      subscription.remove();
     };
   }, [dispatch, enabled]);
 };
-
 
 export default useStayTimer;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     View,
     Text,
@@ -14,19 +14,32 @@ import { Button, Divider, List } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import FIcon from "react-native-vector-icons/FontAwesome6";
 import { logoutUser } from "../redux/slices/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+
 
 const CustomDrawer = ({ isOpen, closeDrawer }) => {
 
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const { t, i18n } = useTranslation();
+    const language = useSelector((state) => state.language.language);
+
+
+    // Update language
+    useEffect(() => {
+        i18n.changeLanguage(language);
+    }, [language]);
+
 
     if (!isOpen) return null;
+
 
     const handleLogout = () => {
         dispatch(logoutUser());
         navigation.navigate("Login");
     };
+
 
     return (
 
@@ -50,95 +63,121 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                 <Divider />
 
                 <ScrollView style={styles.settingListContainer}>
+
                     <List.Section>
 
                         <List.Item
                             style={styles.drawerlistItem}
-                            title="Weather Info"
-                            left={() => <Icon name="weather-cloudy" size={22} />}
-                            right={() => <Icon name="chevron-right" size={22} />}
-                            onPress={() => navigation.navigate("Weather")}
-                        />
-
-                        <List.Item
-                            style={styles.drawerlistItem}
-                            title="My Points Score"
+                            title={t('Daily Mandi Price')}
                             left={() => <FIcon name="coins" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
-                            onPress={() => navigation.navigate("Point Transactions")}
+                            onPress={() => navigation.navigate(t("MandiPrice"))}
                         />
 
                         <List.Item
                             style={styles.drawerlistItem}
-                            title="All Shops"
+                            title={t('Upgrade Plan')}
+                            left={() => <FIcon name="coins" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate(t("UpgradePlans"))}
+                        />
+
+                        <List.Item
+                            style={styles.drawerlistItem}
+                            title={t('weatherInfo')}
+                            left={() => <Icon name="weather-cloudy" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate(t("Weather"))}
+                        />
+
+
+                        <List.Item
+                            style={styles.drawerlistItem}
+                            title={t('Upgrade Points')}
+                            left={() => <FIcon name="coins" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate(t("UpgradePoints"))}
+                        />
+
+                        <List.Item
+                            style={styles.drawerlistItem}
+                            title={t('myPointsScore')}
+                            left={() => <FIcon name="coins" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate(t("Point Transactions"))}
+                        />
+
+                        <List.Item
+                            style={styles.drawerlistItem}
+                            title={t('allShops')}
                             left={() => <Icon name="storefront" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
-                            onPress={() => navigation.navigate("All Shops")}
+                            onPress={() => navigation.navigate(t("All Shops"))}
                         />
 
                         <List.Item
                             style={styles.drawerlistItem}
-                            title="My Products"
+                            title={t('myProducts')}
                             left={() => <Icon name="archive-plus" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
-                            onPress={() => navigation.navigate("My Products")}
+                            onPress={() => navigation.navigate(t("My Products"))}
                         />
-
 
                         <List.Item
                             style={styles.drawerlistItem}
-                            title="My Details"
+                            title={t('myDetails')}
                             left={() => <Icon name="card-account-details" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
-                            onPress={() => navigation.navigate("My Details")}
+                            onPress={() => navigation.navigate(t("My Details"))}
                         />
 
                         <List.Item
                             style={styles.drawerlistItem}
-                            title="My Shop Reviews"
+                            title={t('myShopReviews')}
                             left={() => <Icon name="storefront" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
-                            onPress={() => navigation.navigate("My Shop Reviews")}
+                            onPress={() => navigation.navigate(t("My Shop Reviews"))}
                         />
 
                         <List.Item
                             style={styles.drawerlistItem}
-                            title="Delivery Preference"
+                            title={t('deliveryPreference')}
                             left={() => <Icon name="map-marker" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
-                            onPress={() => navigation.navigate("Delivery Preference")}
+                            onPress={() => navigation.navigate(t("Delivery Preference"))}
                         />
 
                         <List.Item
                             style={styles.drawerlistItem}
-                            title="Help & Support"
-                            left={() => <Icon name="help-circle" size={22} />}
-                            right={() => <Icon name="chevron-right" size={22} />}
-                            onPress={() => navigation.navigate("Contact")}
-                        />
-
-                        <List.Item
-                            style={styles.drawerlistItem}
-                            title="Refer & Earn"
+                            title={t('referAndEarn')}
                             left={() => <FIcon name="money-bill-1" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
-                            onPress={() => navigation.navigate("ReferandEarn")}
+                            onPress={() => navigation.navigate(t("ReferandEarn"))}
                         />
 
                         <List.Item
                             style={styles.drawerlistItem}
-                            title="Change Language"
+                            title={t('helpAndSupport')}
+                            left={() => <Icon name="help-circle" size={22} />}
+                            right={() => <Icon name="chevron-right" size={22} />}
+                            onPress={() => navigation.navigate(t("Contact"))}
+                        />
+
+
+                        <List.Item
+                            style={styles.drawerlistItem}
+                            title={t('changeLanguage')}
                             left={() => <FIcon name="language" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
-                            onPress={() => navigation.navigate("Select Language")}
+                            onPress={() => navigation.navigate(t("Select Language"))}
                         />
 
                         <List.Item
                             style={styles.drawerlistItem}
-                            title="Farming Tips"
+                            title={t('farmingTips')}
                             left={() => <Icon name="lightbulb-outline" size={22} />}
                             right={() => <Icon name="chevron-right" size={22} />}
-                            onPress={() => navigation.navigate("Farming Tips")}
+                            onPress={() => navigation.navigate(t("Farming Tips"))}
                         />
 
                     </List.Section>
@@ -149,7 +188,7 @@ const CustomDrawer = ({ isOpen, closeDrawer }) => {
                         style={styles.logoutButton}
                         icon="logout"
                     >
-                        Log Out
+                        {t('logOut')}
                     </Button>
                 </ScrollView>
             </View>

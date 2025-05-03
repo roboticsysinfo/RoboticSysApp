@@ -8,12 +8,14 @@ import { Dropdown } from 'react-native-element-dropdown';
 import DatePicker from 'react-native-date-picker';
 import { useNavigation } from '@react-navigation/native';
 import { fetchCategories } from '../redux/slices/categorySlice';
+import { useTranslation } from 'react-i18next';
 
 const EditProductScreen = ({ route }) => {
 
     const { productId } = route.params;
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const {t} = useTranslation();
     const { product } = useSelector(state => state.products);
     const { categories } = useSelector(state => state.categories);
 
@@ -86,7 +88,7 @@ const EditProductScreen = ({ route }) => {
 
             <TextInput
                 mode='outlined'
-                label="Product Name"
+                label={t("Product Name")}
                 value={formData.name}
                 onChangeText={text => setFormData(prev => ({ ...prev, name: text }))}
                 style={styles.textInput}
@@ -94,17 +96,17 @@ const EditProductScreen = ({ route }) => {
 
             <Dropdown
                 style={styles.dropdown}
-                data={[{ label: 'Winter', value: 'winter' }, { label: 'Summer', value: 'summer' }]}
+                data={[{ label: t('Winter'), value: 'winter' }, { label: t('Summer'), value: 'summer' }]}
                 value={formData.season}
                 labelField="label"
                 valueField="value"
-                placeholder="Select Season"
+                placeholder={t("Select Season")}
                 onChange={item => setFormData(prev => ({ ...prev, season: item.value }))}
             />
 
             <TextInput
                 mode='outlined'
-                label="Price Per Unit"
+                label={t("Price Per Unit")}
                 keyboardType="numeric"
                 value={formData.price_per_unit}
                 onChangeText={text => setFormData(prev => ({ ...prev, price_per_unit: text }))}
@@ -113,7 +115,7 @@ const EditProductScreen = ({ route }) => {
 
             <TextInput
                 mode='outlined'
-                label="Quantity"
+                label={t("Quantity")}
                 keyboardType="numeric"
                 value={formData.quantity}
                 onChangeText={text => setFormData(prev => ({ ...prev, quantity: text }))}
@@ -126,7 +128,7 @@ const EditProductScreen = ({ route }) => {
                 value={formData.unit}
                 labelField="label"
                 valueField="value"
-                placeholder="Select Unit"
+                placeholder={t("Select Unit")}
                 onChange={item => setFormData(prev => ({ ...prev, unit: item.value }))}
             />
 
@@ -136,14 +138,14 @@ const EditProductScreen = ({ route }) => {
                 value={formData.category_id}  // Ensure correct value is set
                 labelField="label"
                 valueField="value"
-                placeholder="Select Category"
+                placeholder={t("Select Category")}
                 onChange={item => {
                     setFormData(prev => ({ ...prev, category_id: item.value }));
                 }}
             />
 
             <Button mode='outlined' onPress={() => setOpenDatePicker(true)}>
-                Select Harvest Date
+                {t("Select Harvest Date")}
             </Button>
 
             <DatePicker
@@ -160,16 +162,16 @@ const EditProductScreen = ({ route }) => {
 
             <TextInput
                 mode='outlined'
-                label="Product Description"
+                label={t("Product Description")}
                 value={formData.description}
                 onChangeText={text => setFormData(prev => ({ ...prev, description: text }))}
                 style={styles.textArea}
             />
 
             {formData.product_image && <Image source={{ uri: formData.product_image }} style={styles.imagePreview} />}
-            <Button mode='outlined' onPress={pickProductImage}>Upload Product Image</Button>
+            <Button mode='outlined' onPress={pickProductImage}>{t("Upload Product Image")}</Button>
 
-            <Button mode='contained' onPress={handleSubmit} style={styles.submitButton}>Update Product</Button>
+            <Button mode='contained' onPress={handleSubmit} style={styles.submitButton}>{t("Update Product")}</Button>
         </ScrollView>
     );
 };

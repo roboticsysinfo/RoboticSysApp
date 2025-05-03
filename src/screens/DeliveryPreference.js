@@ -7,9 +7,11 @@ import {
     addDeliveryPreference,
     updateDeliveryPreference,
 } from "../redux/slices/deliveryPreferenceSlice";
+import { useTranslation } from "react-i18next";
 
 const DeliveryPreference = () => {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const { preference, loading } = useSelector((state) => state.deliveryPreference);
     const { user } = useSelector((state) => state.auth);
 
@@ -40,10 +42,10 @@ const DeliveryPreference = () => {
         try {
             if (activeTab === "add") {
                 await dispatch(addDeliveryPreference({ farmer_id: farmerId, ...formData })).unwrap();
-                ToastAndroid.show("Delivery Preference Added Successfully!", ToastAndroid.SHORT);
+                ToastAndroid.show(t("Delivery Preference Added Successfully!"), ToastAndroid.SHORT);
             } else {
                 await dispatch(updateDeliveryPreference({ farmerId, updatedData: formData })).unwrap();
-                ToastAndroid.show("Delivery Preference Updated Successfully!", ToastAndroid.SHORT);
+                ToastAndroid.show(t("Delivery Preference Updated Successfully!"), ToastAndroid.SHORT);
             }
         } catch (error) {
             ToastAndroid.show("Error Occurred!", ToastAndroid.SHORT);
@@ -65,29 +67,29 @@ const DeliveryPreference = () => {
                     onPress={() => setActiveTab("update")}
                     color={activeTab === "update" ? "blue" : "gray"}
                 />
-                <Appbar.Content title="Delivery Preference" />
+                <Appbar.Content title={t("Delivery Preference")} />
             </Appbar.Header>
 
             {/* 🔹 Form */}
             <View style={styles.formContainer}>
-                <Text style={styles.label}>Select Delivery Method</Text>
+                <Text style={styles.label}>{t("Select Delivery Method")}</Text>
                 <RadioButton.Group
                     onValueChange={(value) => setFormData({ ...formData, delivery_method: value })}
                     value={formData.delivery_method}
                 >
                     <View style={styles.radioRow}>
                         <RadioButton value="self-pickup" />
-                        <Text>Self Pickup</Text>
+                        <Text>{t("Self Pickup")}</Text>
                     </View>
                     <View style={styles.radioRow}>
                         <RadioButton value="delivery-by-farmer" />
-                        <Text>Delivery by Farmer</Text>
+                        <Text>{t("Delivery by Farmer")}</Text>
                     </View>
                 </RadioButton.Group>
 
                 <TextInput
                     mode="outlined"
-                    label="Delivery Range"
+                    label={t("Delivery Range")}
                     value={formData.delivery_range}
                     onChangeText={(text) => setFormData({ ...formData, delivery_range: text })}
                     style={styles.textInput}
@@ -95,7 +97,7 @@ const DeliveryPreference = () => {
 
                 <TextInput
                     mode="outlined"
-                    label="Additional Notes"
+                    label={t("Additional Notes")}
                     value={formData.additional_notes}
                     onChangeText={(text) => setFormData({ ...formData, additional_notes: text })}
                     multiline
@@ -103,8 +105,9 @@ const DeliveryPreference = () => {
                 />
 
                 <Button style={{padding: 8, borderRadius: 4}} mode="contained" loading={loading} onPress={handleSubmit}>
-                    {activeTab === "add" ? "Add Preference" : "Update Preference"}
+                    {activeTab === "add" ? t("Add Preference") : t("Update Preference")}
                 </Button>
+                
             </View>
         </View>
     );

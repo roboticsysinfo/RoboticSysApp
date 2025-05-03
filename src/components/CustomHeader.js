@@ -1,18 +1,40 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Avatar, Badge, Text } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import FIcon from "react-native-vector-icons/FontAwesome6";
 import { useNavigation } from "@react-navigation/native";
 import { COLORS } from "../../theme";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { getFarmerById } from "../redux/slices/authSlice";
+import { REACT_APP_BASE_URI } from "@env"
 
 
 const CustomHeader = ({ toggleDrawer, user, points, unreadCount }) => {
-    
+
   const navigation = useNavigation();
+  const dispatch = useDispatch()
+  const { t, i18n } = useTranslation();
+  const language = useSelector((state) => state.language.language);
+  const { farmerDetails, loading, error } = useSelector((state) => state.auth);
+
+  const farmerId = user?.id;
+
+  // Update language
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
+
+  useEffect(() => {
+    if (farmerId) {
+      dispatch(getFarmerById(farmerId));
+    }
+  }, [dispatch, farmerId]);
 
   return (
+
     <View style={styles.header}>
 
       <TouchableOpacity style={styles.menuButton} onPress={toggleDrawer}>
@@ -20,19 +42,23 @@ const CustomHeader = ({ toggleDrawer, user, points, unreadCount }) => {
       </TouchableOpacity>
 
       <View style={styles.profileContainer}>
+
         <Avatar.Image
           size={42}
-          source={{ uri: "https://avatar.iran.liara.run/public/boy" }}
+          source={{ uri: farmerDetails?.profileImg ? `${REACT_APP_BASE_URI}/${farmerDetails.profileImg}` : "https://avatar.iran.liara.run/public/boy" }}
+
         />
+
         <View style={styles.profileInfo}>
-          <Text style={styles.subText}>Welcome,</Text>
+          <Text style={styles.subText}>{t("welcome")},</Text>
           <Text style={styles.nameText}>{user ? user.name : "N/A"}</Text>
         </View>
+
       </View>
 
       <TouchableOpacity
         style={styles.walletButton}
-        onPress={() => navigation.navigate("Point Transactions")}
+        onPress={() => navigation.navigate(t("Point Transactions"))}
       >
         <FIcon name="wallet" size={28} color="black" />
         {points > 0 && (
@@ -42,7 +68,7 @@ const CustomHeader = ({ toggleDrawer, user, points, unreadCount }) => {
 
       <TouchableOpacity
         style={styles.notificationButton}
-        onPress={() => navigation.navigate("Notifications")}
+        onPress={() => navigation.navigate(t("Notifications"))}
       >
         <Icon name="bell-outline" size={32} color="black" />
         {unreadCount > 0 && (
@@ -74,10 +100,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profileInfo: {
-    marginLeft: 15,
+    marginLeft: 5,
   },
   nameText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
     color: COLORS.lightBlack,
   },

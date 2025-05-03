@@ -1,13 +1,21 @@
 // KYCPendingScreen.js
-import React from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet, Text, Image } from "react-native";
 import { Button } from "react-native-paper";
 import { useSelector } from "react-redux";
 import kycverification from "../../src/assets/kyc-verification.png";
+import { useTranslation } from "react-i18next";
 
 const KYCPendingScreen = ({ navigation }) => {
 
   const { user } = useSelector((state) => state.auth);
+  const { t, i18n } = useTranslation();  
+  const language = useSelector((state) => state.language.language);  
+  
+  // Update language
+    useEffect(() => {
+      i18n.changeLanguage(language);
+    }, [language]);
 
   return (
     <View style={styles.container}>
@@ -17,13 +25,13 @@ const KYCPendingScreen = ({ navigation }) => {
         resizeMode="contain"
       />
 
-      <Text style={styles.title}>KYC Verification in Progress</Text>
+      <Text style={styles.title}>{t('KYC Verification in Progress')}</Text>
       <Text style={styles.subtitle}>
-        Hello {user?.name}, your KYC is currently under review.
+        {(t('Hello'))} {user?.name}, {t('your KYC is currently under review.')}
       </Text>
 
       <Text style={styles.message}>
-        Once your KYC is successfully verified, you'll be granted full access to the dashboard.
+          {t("Once your KYC is successfully verified, you'll be granted full access to the dashboard.")}
       </Text>
 
       <Button
@@ -31,7 +39,7 @@ const KYCPendingScreen = ({ navigation }) => {
         style={styles.button}
         onPress={() => navigation.navigate('Login')} // Or to logout or contact support
       >
-        Go Back
+        {t('Go Back')}
       </Button>
     </View>
   );

@@ -1,111 +1,135 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Image, StyleSheet, Dimensions, ActivityIndicator, ScrollView } from 'react-native';
-import { Text, Card, Title, Paragraph, Avatar, Divider } from 'react-native-paper';
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { Text, Title, Paragraph, Avatar, Button } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { COLORS } from '../../theme';
 import { clearSelectedShop, fetchProductsByShopId, fetchShopByShopId } from '../redux/slices/shopSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
 import { REACT_APP_BASE_URI } from '@env';
-import FIcon from "react-native-vector-icons/FontAwesome6";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AboutTab from '../components/AboutTab';
+import { fetchReviews } from '../redux/slices/reviewSlice';
+import ShopReviewsTab from '../components/ShopReviewsTab';
 import ProductsTab from '../components/ProductTab';
-
-
-const initialLayout = { width: Dimensions.get('window').width };
 
 const ShopDetailsScreen = ({ route }) => {
 
   const { shopId } = route.params;
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { selectedShop: shop, status } = useSelector(state => state.shop);
+  const { selectedShop: shop, status, products } = useSelector(state => state.shop);
   const { reviews, averageRating } = useSelector(state => state.reviews);
-  const { products } = useSelector((state) => state.shop);
 
-  const totalReviews = reviews.length;
+  const [activeTab, setActiveTab] = useState('about');
   const rating = parseFloat(averageRating) || 0;
 
-  const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    { key: 'about', title: 'About' },
-    { key: 'products', title: 'Products' },
-  ]);
-
-  const renderScene = SceneMap({
-    about: AboutTab,
-    products: ProductsTab,
-  });
-
+  console.warn("shop", shop)
 
   useEffect(() => {
     dispatch(fetchShopByShopId(shopId));
     dispatch(fetchProductsByShopId(shopId));
+    dispatch(fetchReviews(shopId));
     return () => {
       dispatch(clearSelectedShop());
     };
   }, [dispatch, shopId]);
 
 
+
   const coverImage = shop?.shop_cover_image ? `${REACT_APP_BASE_URI}/${shop.shop_cover_image}` : 'https://via.placeholder.com/300';
   const profileImage = shop?.shop_profile_image ? `${REACT_APP_BASE_URI}/${shop.shop_profile_image}` : 'https://via.placeholder.com/100';
 
 
+
   if (status === "loading" || !shop) {
     return (
-      <View style={styles.container}>
-
-        <ActivityIndicator style={{ marginTop: 60 }} size="large" color={COLORS.secondaryColor} />
-
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color={COLORS.secondaryColor} />
       </View>
     );
   }
 
   return (
+
     <View style={styles.container}>
-      <Image source={{ uri: coverImage }} style={styles.coverImage} />
+
+      <Image
+        source={{ uri: coverImage }}
+        style={styles.coverImage}
+      />
 
       <View style={styles.profileSection}>
-        <Avatar.Image size={80} source={{ uri: profileImage }} />
+
+        <Avatar.Image
+          size={80}
+          source={{ uri: profileImage }}
+          style={{ backgroundColor: '#f0f0f0' }}
+        />
+
         <View style={styles.info}>
-          <Title>{shop.shop_name}</Title>
-          <Paragraph style={styles.subTitle}>{shop.city_district}</Paragraph>
-          <View style={styles.ratingRow}>
-            <Text style={styles.stars}><Icon name="star" /></Text>
-            <Text style={styles.rating}>{rating}</Text>
+
+          <Title style={{ fontWeight: "bold" }}>{shop?.shop_name || 'Unnamed Shop'}</Title>
+
+          <Paragraph style={styles.subTitle}>{shop?.city_district || 'Unknown location'}</Paragraph>
+
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+
+            <View style={styles.ratingRow}>
+              <Text style={styles.stars}><Icon name="star" size={22} /></Text>
+              <Text style={styles.rating}>{rating}</Text>
+            </View>
+
           </View>
+
         </View>
+
       </View>
 
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={initialLayout}
-        renderTabBar={props => (
-          <TabBar
-            {...props}
-            indicatorStyle={{ backgroundColor: '#000' }}
-            style={{ backgroundColor: COLORS.primaryColor }}
-            renderLabel={({ route, focused }) => (
-              <Text style={{ color: focused ? "#fff" : 'gray', margin: 8 }}>
-                {route.title}
-              </Text>
-            )}
-          />
-        )}
-      />
+      {/* Tabs */}
+      <View style={styles.tabContainer}>
+
+        {['about', 'products', 'reviews'].map(tab => (
+
+          <Text
+            key={tab}
+            onPress={() => setActiveTab(tab)}
+            style={[
+              styles.tabText,
+              activeTab === tab && styles.activeTabText
+            ]}
+          >
+            {tab === 'about' ? 'About' : tab === 'products' ? 'Products' : 'Reviews'}
+          </Text>
+
+        ))}
+      </View>
+
+      {/* Content */}
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+
+        {activeTab === 'about' && <AboutTab shop={shop} />}
+
+        {activeTab === 'products' && <ProductsTab shop={shop} />}
+
+        {activeTab === 'reviews' && <ShopReviewsTab shopId={shop?._id} />}
+
+
+      </ScrollView>
+
     </View>
+
   );
-
-
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   coverImage: {
     width: '100%',
@@ -129,47 +153,32 @@ const styles = StyleSheet.create({
   },
   stars: {
     color: '#FFD700',
-    fontSize: 16,
   },
   rating: {
-    marginLeft: 8,
+    marginRight: 10,
+    fontWeight: "600",
+    fontSize: 18,
+    color: "gray"
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  tabText: {
+    marginHorizontal: 20,
+    paddingBottom: 8,
+    fontSize: 16,
+    color: 'gray',
+  },
+  activeTabText: {
+    color: COLORS.primaryColor,
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.primaryColor,
     fontWeight: 'bold',
   },
-  tabContent: {
-    padding: 16,
-    color: "#000",
-    backgroundColor: "#fff"
-  },
-  productsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    padding: 10,
-  },
-  productCard: {
-    width: '45%',
-    marginVertical: 10,
-  },
-
-  flexSection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd"
-  },
-
-  sectionTitle: {
-    fontSize: 18,
-    marginBottom: 10,
-    fontSize: 18
-  },
-
-  section: {
-    padding: 20,
-    backgroundColor: "#fff"
-  },
-
 });
 
 export default ShopDetailsScreen;

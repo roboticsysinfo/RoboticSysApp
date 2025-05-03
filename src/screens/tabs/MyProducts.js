@@ -11,11 +11,13 @@ import CustomDrawer from '../../navigation/CustomDrawer';
 import { fetchNotifications } from '../../redux/slices/notificationSlice';
 import { getOrderRequestByFarmerId } from '../../redux/slices/orderSlice';
 import { REACT_APP_BASE_URI } from '@env'
+import { useTranslation } from 'react-i18next';
 
 const MyProducts = () => {
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const { t, i18n } = useTranslation();  
 
   // Fetching products and status from Redux
   const { products, status, error } = useSelector((state) => state.products);
@@ -69,19 +71,19 @@ console.log("products", products)
   // Handle product deletion
   const handleDelete = (productId) => {
     Alert.alert(
-      "Confirm Deletion",
-      "Are you sure you want to delete this product?",
+      t("Confirm Deletion"),
+      t("Are you sure you want to delete this product?"),
       [
         {
-          text: "No",
+          text: t("No"),
           onPress: () => console.log("Deletion Cancelled"),
           style: "cancel"
         },
         {
-          text: "Yes",
+          text: t("Yes"),
           onPress: () => {
             dispatch(deleteProduct(productId));
-            ToastAndroid.show("Product Deleted Successfully!", ToastAndroid.SHORT);
+            ToastAndroid.show(t("Product Deleted Successfully!"), ToastAndroid.SHORT);
           }
         }
       ]
@@ -112,11 +114,11 @@ console.log("products", products)
           mode="contained"
           style={styles.addProductBtn}
           contentStyle={styles.buttonContent}
-          onPress={() => navigation.navigate('Add New Product')}
+          onPress={() => navigation.navigate(t("Add New Product"))}
         >
           <View style={styles.buttonInner}>
             <FIcon name="cart-plus" size={24} color="white" style={styles.icon} />
-            <Text style={styles.buttonText}>Add New Product</Text>
+            <Text style={styles.buttonText}>{t("addNewProduct")}</Text>
           </View>
         </Button>
 
@@ -132,9 +134,9 @@ console.log("products", products)
 
           <View style={styles.emptyContainer}>
             <Image source={noOrder} style={styles.image} />
-            <Text style={styles.emptyTitle}>No Orders Yet</Text>
+            <Text style={styles.emptyTitle}>{t("No Products Yet")}</Text>
             <Text style={styles.emptySubtitle}>
-              We’ll let you know when there will be something to update you.
+              {t("We’ll let you know when there will be something to update you.")}
             </Text>
           </View>
 
@@ -159,9 +161,9 @@ console.log("products", products)
                     <View style={styles.actionRow}>
                       <Button
                         mode="contained" style={styles.editbtn}
-                        onPress={() => navigation.navigate('Edit Product', { productId: item._id })}
+                        onPress={() => navigation.navigate(t("Edit Product"), { productId: item._id })}
                       >
-                        Edit
+                        {t("Edit")}
                       </Button>
                       <FIcon style={{marginLeft: 20}} name="trash-can" color={'#DA2825'} size={20} onPress={() => handleDelete(item._id)} />
                     </View>

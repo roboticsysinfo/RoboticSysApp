@@ -6,14 +6,18 @@ import { Button, Card, Divider } from 'react-native-paper';
 import norequest from "../assets/request.png";
 import { COLORS } from '../../theme';
 import { Snackbar } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 
 
 const FamilyFarmerRequestScreen = () => {
 
+  
   const dispatch = useDispatch();
+  const {t} = useTranslation();
   const { requests, loading, error } = useSelector((state) => state.familyfarmer);
   const { user } = useSelector((state) => state.auth);
   const farmerId = user?.id;
+
 
   const [refreshing, setRefreshing] = useState(false);
   // Snackbar state
@@ -21,15 +25,18 @@ const FamilyFarmerRequestScreen = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarError, setSnackbarError] = useState(false);
 
+
   const fetchRequests = useCallback(() => {
     if (farmerId) {
       dispatch(getRequestsForFarmer(farmerId));
     }
   }, [dispatch, farmerId]);
 
+
   useEffect(() => {
     fetchRequests();
   }, [fetchRequests]);
+
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -42,30 +49,31 @@ const FamilyFarmerRequestScreen = () => {
     dispatch(updateRequestStatus({ requestId, status: 'accepted' }))
       .unwrap()
       .then((res) => {
-        setSnackbarMessage(res.message || 'Request confirmed successfully');
+        setSnackbarMessage(res.message || t('Request confirmed successfully'));
         setSnackbarError(false);
         setSnackbarVisible(true);
         fetchRequests(); // Refresh the list
       })
       .catch((err) => {
-        setSnackbarMessage(err.message || 'Failed to confirm request');
+        setSnackbarMessage(err.message || t('Failed to confirm request'));
         setSnackbarError(true);
         setSnackbarVisible(true);
       });
   };
+
 
   // Handle reject request
   const handleRejectRequest = (requestId) => {
     dispatch(updateRequestStatus({ requestId, status: 'rejected' }))
       .unwrap()
       .then((res) => {
-        setSnackbarMessage(res.message || 'Request rejected successfully');
+        setSnackbarMessage(res.message || t('Request rejected successfully'));
         setSnackbarError(false);
         setSnackbarVisible(true);
         fetchRequests(); // Refresh the list
       })
       .catch((err) => {
-        setSnackbarMessage(err.message || 'Failed to reject request');
+        setSnackbarMessage(err.message || t('Failed to reject request'));
         setSnackbarError(true);
         setSnackbarVisible(true);
       });
@@ -92,7 +100,7 @@ const FamilyFarmerRequestScreen = () => {
             </View>
             <Text style={styles.dateText}>{new Date(item.createdAt).toLocaleDateString()}</Text>
           </View>
-          <Text style={styles.messageText}>{item.message}</Text>
+          <Text style={styles.messageText}>{t(item.message)}</Text>
         </View>
       </View>
       <View style={styles.buttonContainer}>
@@ -101,14 +109,14 @@ const FamilyFarmerRequestScreen = () => {
           onPress={() => handleConfirmRequest(item._id)}
           style={[styles.button, styles.approveBtn]}
         >
-          Confirm
+          {t("Confirm")}
         </Button>
         <Button
           mode="outlined"
           onPress={() => handleRejectRequest(item._id)}
           style={[styles.button, styles.declineBtn]}
         >
-          <Text style={styles.declineBtntext}>Reject</Text>
+          <Text style={styles.declineBtntext}>{t("Reject")}</Text>
         </Button>
       </View>
     </Card>
@@ -118,10 +126,10 @@ const FamilyFarmerRequestScreen = () => {
     <View style={styles.emptyContainer}>
       <Image source={norequest} style={styles.image} />
       <Text style={styles.emptyTitle}>
-        {error ? `Error: ${error}` : 'No Family Requests Found Yet!'}
+        {error ? `Error: ${error}` : t("No Family Requests Found Yet!")}
       </Text>
       <Text style={styles.emptySubtitle}>
-        We’ll let you know when there will be something to update you.
+          {t(" We’ll let you know when there will be something to update you.")}
       </Text>
     </View>
   );

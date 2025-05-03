@@ -31,12 +31,20 @@ import PointTransactionScreen from '../screens/PointTransactionScreen';
 import FarmingTipsScreen from '../screens/FarmingTipsScreen';
 import FamilyFarmerRequestScreen from '../screens/FamilyFarmerRequestScreen';
 import FamilyCustomersList from '../screens/FamilyCustomersList';
+import { useTranslation } from 'react-i18next';
+import UpgradePointsScreen from '../screens/UpgradePointsScreen';
+import UpgradePlansScreen from '../screens/UpgradePlansScreen';
+import ShopScreen from '../screens/tabs/ShopScreen';
+import ActivePlansScreen from '../screens/ActivePlansScreen';
+import MandiPricesScreen from '../screens/MandiPricesScreen';
+import ReferralListScreen from '../screens/ReferralListScreen';
 
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation()
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [isLanguageSet, setIsLanguageSet] = useState(null);
 
@@ -93,34 +101,43 @@ const AppNavigator = () => {
         <Stack.Screen name="Login" component={PNLoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="OTP Verify" component={OtpScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="Select Language" component={SelectLang} options={{ headerShown: false }} />
-        <Stack.Screen name="Create Shop" component={CreateShopScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="My Details" component={ProfileScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="Edit Shop" component={EditShopScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="Add New Product" component={AddProductScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="Edit Product" component={EditProductScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="Delivery Preference" component={DeliveryPreference} options={{ headerShown: true }} />
-        <Stack.Screen name="My Shop Reviews" component={ShopReviewsScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="Contact" component={HelpSupportScreen} options={{ headerShown: true }} />
+        <Stack.Screen name={t("Profile")} component={ProfileScreen} options={{ headerShown: true }} />
+        <Stack.Screen name={t("Select Language")} component={SelectLang} options={{ headerShown: false }} />
+        <Stack.Screen name={t("Create Shop")} component={CreateShopScreen} options={{ headerShown: true }} />
+        <Stack.Screen name={t("My Details")} component={ProfileScreen} options={{ headerShown: true }} />
+        <Stack.Screen name={t("Edit Shop")} component={EditShopScreen} options={{ headerShown: true }} />
+        <Stack.Screen name={t("Add New Product")} component={AddProductScreen} options={{ headerShown: true }} />
+        <Stack.Screen name={t("Edit Product")} component={EditProductScreen} options={{ headerShown: true }} />
+        <Stack.Screen name={t("Notifications")} component={NotificationsScreen} options={{ headerShown: true }} />
+        <Stack.Screen name={t("Delivery Preference")} component={DeliveryPreference} options={{ headerShown: true }} />
+        <Stack.Screen name={t("My Shop Reviews")} component={ShopReviewsScreen} options={{ headerShown: true }} />
+        <Stack.Screen name={t("Contact")} component={HelpSupportScreen} options={{ headerShown: true }} />
 
-        <Stack.Screen name="KYC Pending" component={KYCPendingScreen} options={{ headerShown: false }} />
+        <Stack.Screen name={t("KYC Pending")} component={KYCPendingScreen} options={{ headerShown: false }} />
 
-        <Stack.Screen name="All Shops" component={AllShopsScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="Shop Details" component={ShopDetailsScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="Orders" component={OrdersScreen} />
-        <Stack.Screen name="Weather" component={WeatherScreen} options={{ headerShown: true }}/>
+        <Stack.Screen name={t("All Shops")} component={AllShopsScreen} options={{ headerShown: true }} />
+        <Stack.Screen name={t("Shop Details")} component={ShopDetailsScreen} options={{ headerShown: true }} />
+        <Stack.Screen name={t("Orders")} component={OrdersScreen} />
+        <Stack.Screen name={t("Weather")} component={WeatherScreen} options={{ headerShown: true }}/>
 
-        <Stack.Screen name="ReferandEarn" component={ReferAndEarnScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="Point Transactions" component={PointTransactionScreen} options={{ headerShown: true }}/>
+        <Stack.Screen name={t("ReferandEarn")} component={ReferAndEarnScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name={t("Point Transactions")} component={PointTransactionScreen} options={{ headerShown: true }}/>
 
-        <Stack.Screen name="Farming Tips" component={FarmingTipsScreen} options={{ headerShown: true }}/>
+        <Stack.Screen name={t("Farming Tips")} component={FarmingTipsScreen} options={{ headerShown: true }}/>
 
-        <Stack.Screen name="Family Farmer Requests" component={FamilyFarmerRequestScreen} options={{ headerShown: true }}/>
+        <Stack.Screen name={t("Family Farmer Requests")} component={FamilyFarmerRequestScreen} options={{ headerShown: true }}/>
 
-        <Stack.Screen name="Family Customers List" component={FamilyCustomersList} options={{ headerShown: true }}/>
+        <Stack.Screen name={t("Family Customers List")} component={FamilyCustomersList} options={{ headerShown: true }}/>
         
+        <Stack.Screen name={t("UpgradePoints")} component={UpgradePointsScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name={t("UpgradePlans")} component={UpgradePlansScreen} options={{ headerShown: false }}/>
+
+        <Stack.Screen name={t("ActivePlans")} component={ActivePlansScreen} options={{ headerShown: false }}/>
+
+        <Stack.Screen name={t("MandiPrice")} component={MandiPricesScreen} options={{ headerShown: false }}/>
+
+        <Stack.Screen name="ReferralList" component={ReferralListScreen} options={{ headerShown: false }} />
+
 
       </Stack.Navigator>
       

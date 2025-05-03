@@ -3,22 +3,26 @@ import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text, Card, ActivityIndicator, Snackbar, Divider } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFarmerById, updateFarmerById } from '../redux/slices/authSlice';
+import { useTranslation } from 'react-i18next';
 
 const ProfileScreen = () => {
 
   const dispatch = useDispatch();
+  const {t} = useTranslation();
   const { user, farmerDetails, loading, error } = useSelector((state) => state.auth);
 
   const [form, setForm] = useState({ name: '', email: '', address: '' });
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const farmerId = user?.id;
 
+  console.log("farmerDetails", farmerDetails);
 
   useEffect(() => {
     if (farmerId) {
       dispatch(getFarmerById(farmerId));
     }
   }, [dispatch, farmerId]);
+
 
   useEffect(() => {
     if (farmerDetails) {
@@ -29,7 +33,7 @@ const ProfileScreen = () => {
       });
     }
   }, [farmerDetails]);
-
+  
 
   const handleChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -49,38 +53,44 @@ const ProfileScreen = () => {
   return (
 
     <View style={styles.container}>
+
       <Card style={styles.card}>
+
         <Card.Title />
+
         <Card.Content>
-          <Text style={{ fontWeight: "bold", marginBottom: 5 }} >Registration Number</Text>
+
+          <Text style={{ fontWeight: "bold", marginBottom: 5 }} >{t("Registration Number")}</Text>
+
           <Text style={{ marginBottom: 10, fontSize: 16, fontWeight: "bold" }}>
             {farmerDetails?.registrationNumber || "N/A"}
           </Text>
-
+          
 
           <Divider style={{ marginVertical: 10 }} />
 
-          <TextInput mode='outlined' style={styles.textInput} label="Name" value={form.name} onChangeText={(text) => handleChange('name', text)} />
+          <TextInput mode='outlined' style={styles.textInput} label={t("Name")} value={form.name} onChangeText={(text) => handleChange('name', text)} />
 
-          <TextInput mode='outlined' style={styles.textInput} label="Email" value={form.email} onChangeText={(text) => handleChange('email', text)} keyboardType="email-address" />
+          <TextInput mode='outlined' style={styles.textInput} label={t("Email")} value={form.email} onChangeText={(text) => handleChange('email', text)} keyboardType="email-address" />
 
-          <TextInput mode='outlined' style={styles.textInput} label="Address" value={form.address} onChangeText={(text) => handleChange('address', text)} />
+          <TextInput mode='outlined' style={styles.textInput} label={t("Address")} value={form.address} onChangeText={(text) => handleChange('address', text)} />
 
-          <TextInput mode='outlined' style={styles.textInput} label="Phone Number" value={String(farmerDetails?.phoneNumber || '')} disabled />
+          <TextInput mode='outlined' style={styles.textInput} label={t("Phone Number")} value={String(farmerDetails?.phoneNumber || '')} disabled />
 
-          <TextInput mode='outlined' style={styles.textInput} label="Aadhar Card" value={String(farmerDetails?.aadharCard || '')} disabled />
+          <TextInput mode='outlined' style={styles.textInput} label={t("Aadhaar Card")} value={String(farmerDetails?.aadharCard || '')} disabled />
 
-          <Text mode='outlined' style={styles.textInput}>KYC Verified: {farmerDetails?.isKYCVerified ? '✅ Verified' : '❌ Unverified'}</Text>
+          <Text mode='outlined' style={styles.textInput}>{t("KYC Verified")}: {farmerDetails?.isKYCVerified ? '✅ Verified' : '❌ Unverified'}</Text>
 
           <Button mode="contained" onPress={handleUpdate} style={styles.button}>
-            Update Profile
+              {t("Update Profile")}
           </Button>
 
         </Card.Content>
+
       </Card>
 
       <Snackbar visible={snackbarVisible} onDismiss={() => setSnackbarVisible(false)}>
-        Profile Updated Successfully
+        {t("Profile Updated Successfully")}
       </Snackbar>
 
     </View>
@@ -98,6 +108,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "#000"
   },
+
 
 });
 

@@ -14,16 +14,17 @@ import { getFarmerById } from '../redux/slices/authSlice';
 import { fetchRedeemProducts } from '../redux/slices/redeemProductSlice';
 import RedeemProducts from '../components/RedeemProducts';
 import { incrementReferralShare } from '../redux/slices/rewardSlice';
+import { useTranslation } from 'react-i18next';
 
 
 const ReferAndEarnScreen = () => {
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const { user, farmerDetails, loading, error } = useSelector((state) => state.auth);
   const { rproducts } = useSelector((state) => state.redeemProducts);
-
 
   const userId = user?.id;
 
@@ -52,7 +53,7 @@ const ReferAndEarnScreen = () => {
     Clipboard.setString(referralCode);
     Toast.show({
       type: 'success',
-      text1: 'Referral code copied!',
+      text1: t('Referral code copied!'),
       position: 'bottom',
     });
   };
@@ -60,16 +61,16 @@ const ReferAndEarnScreen = () => {
   // Share Download Url with Referral Code
 
   const shareReferral = async () => {
-    const message = `Join our app and get rewards! Use my referral code: ${referralCode}.\nDownload the app: https://yourappdownloadlink.com`;
-  
+    const message = `${t("Join our app and get rewards! Use my referral code:")} ${referralCode}.\n${t("Download the app")}: https://yourappdownloadlink.com`;
+
     try {
       const result = await Share.share({ message });
-  
+
       if (result.action === Share.sharedAction) {
         const res = await dispatch(incrementReferralShare(userId));
-  
+
         // Check for daily limit
-        if (res.payload?.message?.includes("Daily share limit")) {
+        if (res.payload?.message?.includes(t("Daily share limit"))) {
           Toast.show({
             type: 'info',
             text1: res.payload.message,
@@ -80,12 +81,12 @@ const ReferAndEarnScreen = () => {
           dispatch(getFarmerById(userId));
         }
       }
-  
+
     } catch (error) {
       console.log("Error sharing referral:", error);
     }
   };
-  
+
 
 
 
@@ -101,8 +102,8 @@ const ReferAndEarnScreen = () => {
           <Icon name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
 
-        <Text style={styles.headerText}>Refer your Friend</Text>
-        <Text style={styles.subHeaderText}>Earn 10 points each</Text>
+        <Text style={styles.headerText}>{t("Refer your Friend")}</Text>
+        <Text style={styles.subHeaderText}>{t("Earn 10 points each")}</Text>
         <Image
           source={coins}
           style={styles.coinsImage}
@@ -114,11 +115,11 @@ const ReferAndEarnScreen = () => {
 
         <View style={styles.pointsRow}>
           <Image source={coinIcon} style={styles.coinIcon} />
-          <Text style={styles.pointsText}>{points} Points</Text>
+          <Text style={styles.pointsText}>{points} {t("Points")}</Text>
         </View>
 
-        <Text style={styles.cardSubText}>Total Points Earn</Text>
-        <Text style={styles.referralTitle}>Referral code</Text>
+        <Text style={styles.cardSubText}>{t("Total Points Earn")}</Text>
+        <Text style={styles.referralTitle}>{t("Referral code")}</Text>
 
         <View style={styles.codeRow}>
           <Text style={styles.code}>{referralCode}</Text>
@@ -126,7 +127,7 @@ const ReferAndEarnScreen = () => {
             style={styles.copyBtn}
             onPress={handleCopy}
           >
-            <Text style={styles.copyText}>Copy</Text>
+            <Text style={styles.copyText}>{t("Copy")}</Text>
           </TouchableOpacity>
         </View>
 
@@ -137,7 +138,7 @@ const ReferAndEarnScreen = () => {
             style={styles.shareButton}
             icon="share-variant"
           >
-            Share Referral Code
+            {t("Share Referral Code")}
           </Button>
         </View>
 
@@ -146,23 +147,65 @@ const ReferAndEarnScreen = () => {
 
       {/* Steps */}
       <Card style={styles.stepCard}>
+        {/* Existing Referral Steps */}
         <View style={styles.step}>
           <Icon name="link-outline" size={20} color="#007aff" />
-          <Text style={styles.stepText}>Invite your Friend to install the app with the link or referral code</Text>
+          <Text style={styles.stepText}>{t("Invite your Friend to install the app with the link or referral code")}</Text>
         </View>
         <View style={styles.step}>
           <Icon name="cube-outline" size={20} color="#f39c12" />
-          <Text style={styles.stepText}>When Your friend register on the app after KYC approve get 10 points each</Text>
+          <Text style={styles.stepText}>{t("When Your friend register on the app after KYC approve get 10 points each")}</Text>
         </View>
         <View style={styles.step}>
           <Icon name="cash-outline" size={20} color="#27ae60" />
-          <Text style={styles.stepText}>You also get 10 Points when your friend register on the app</Text>
+          <Text style={styles.stepText}>{t("You also get 10 Points when your friend register on the app")}</Text>
         </View>
+
+        {/* Points System */}
+        
+        <View style={styles.step}>
+          <Icon name="time-outline" size={20} color="#8e44ad" />
+          <Text style={styles.stepText}>{t("Stay on the app for 5 minutes daily and get points")}</Text>
+        </View>
+
+        <View style={styles.step}>
+          <Icon name="share-social-outline" size={20} color="#3498db" />
+          <Text style={styles.stepText}>{t("Share the app 3 times daily and earn 5 points")}</Text>
+        </View>
+
+        <View style={styles.step}>
+          <Icon name="log-in-outline" size={20} color="#2c3e50" />
+          <Text style={styles.stepText}>{t("Login daily and earn 1 point")}</Text>
+        </View>
+
+        <View style={styles.step}>
+          <Icon name="person-add-outline" size={20} color="#1abc9c" />
+          <Text style={styles.stepText}>{t("Register yourself on the app and earn 5 points")}</Text>
+        </View>
+
+        <View style={styles.step}>
+          <Icon name="add-circle-outline" size={20} color="#e67e22" />
+          <Text style={styles.stepText}>{t("Add a new crop or product and get 3 points")}</Text>
+        </View>
+
+        <View style={styles.step}>
+          <Icon name="pricetag-outline" size={20} color="#e74c3c" />
+          <Text style={styles.stepText}>{t("Redeem products using points, points will be deducted")}</Text>
+        </View>
+
+        <View style={styles.step}>
+          <Text style={{ fontWeight: "bold" }}>
+            Note: These redeem points are acceptable only at the Kissan Growth App Platforms.
+            These points will not be redeemable or applicable to outside or third parties.
+          </Text>
+        </View>
+
       </Card>
 
+
       {/* Rewards Section */}
-      <Text style={styles.rewardHeader}>Popular in Reward </Text>
-      <Text style={{ fontSize: 18, paddingHorizontal: 16, fontWeight: "bold", color: "#f39c12" }}>Redeem Exciting Products with points</Text>
+      <Text style={styles.rewardHeader}>{t("Popular in Reward")} </Text>
+      <Text style={{ fontSize: 18, paddingHorizontal: 16, fontWeight: "bold", color: "#f39c12" }}>{t("Redeem Exciting Products with points")}</Text>
 
       <RedeemProducts />
 

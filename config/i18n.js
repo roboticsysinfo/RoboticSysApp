@@ -4,10 +4,20 @@ import * as Localization from 'react-native-localize';
 
 import en from '../locales/en.json';
 import hi from '../locales/hi.json';
+import pa from "../locales/pa.json";
+import bn from "../locales/bn.json";
+import gu from "../locales/gu.json";
+import ur from "../locales/ur.json";
 
 const resources = {
+  
   en: { translation: en },
   hi: { translation: hi },
+  pa: { translation: pa },
+  bn: { translation: bn },
+  gu: { translation: gu },
+  ur: { translation: ur },
+
 };
 
 i18n

@@ -7,10 +7,12 @@ import { launchImageLibrary } from "react-native-image-picker";
 import api from '../services/api';
 import { useNavigation } from '@react-navigation/native';
 import { Dropdown } from 'react-native-element-dropdown';
+import { useTranslation } from 'react-i18next';
 
 const CreateShopScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const { t } = useTranslation()
 
     const [formData, setFormData] = useState({
         shop_name: '',
@@ -80,8 +82,8 @@ const CreateShopScreen = () => {
 
         try {
             await dispatch(createShop(formDataToSend));
-            ToastAndroid.show("Shop Created Successfully!", ToastAndroid.SHORT);
-            navigation.goBack();
+            ToastAndroid.show(t("Shop Created Successfully!"), ToastAndroid.SHORT);
+            navigation.replace(t("myShop"));
         } catch (error) {
             console.error("Create Error:", error);
         }
@@ -91,31 +93,31 @@ const CreateShopScreen = () => {
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
             <ScrollView style={styles.container} keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
 
-                <TextInput mode='outlined' style={styles.textInput} label="Shop Name" value={formData.shop_name} onChangeText={text => setFormData(prev => ({ ...prev, shop_name: text }))} />
+                <TextInput mode='outlined' style={styles.textInput} label={t("Shop Name")} value={formData.shop_name} onChangeText={text => setFormData(prev => ({ ...prev, shop_name: text }))} />
 
-                <TextInput mode='outlined' style={styles.textInput} label="Shop Address" value={formData.shop_address} onChangeText={text => setFormData(prev => ({ ...prev, shop_address: text }))} />
+                <TextInput mode='outlined' style={styles.textInput} label={t("Shop Address")} value={formData.shop_address} onChangeText={text => setFormData(prev => ({ ...prev, shop_address: text }))} />
 
-                <Dropdown style={styles.dropdownMenu} data={states.map(item => ({ label: item.state, value: item.state }))} value={formData.state} labelField="label" valueField="value" placeholder="Select State" onChange={item => handleStateChange(item.value)} />
+                <Dropdown style={styles.dropdownMenu} data={states.map(item => ({ label: item.state, value: item.state }))} value={formData.state} labelField="label" valueField="value" placeholder={t("Select State")} onChange={item => handleStateChange(item.value)} />
 
-                <Dropdown style={styles.dropdownMenu} data={cities.map(city => ({ label: city, value: city }))} value={formData.city_district} labelField="label" valueField="value" placeholder="Select City/District" onChange={item => setFormData(prevState => ({ ...prevState, city_district: item.value }))} />
+                <Dropdown style={styles.dropdownMenu} data={cities.map(city => ({ label: city, value: city }))} value={formData.city_district} labelField="label" valueField="value" placeholder={t("Select City/District")} onChange={item => setFormData(prevState => ({ ...prevState, city_district: item.value }))} />
 
-                <TextInput mode='outlined' style={styles.textInput} label="Village" value={formData.village_name} onChangeText={text => setFormData(prev => ({ ...prev, village_name: text }))} />
+                <TextInput mode='outlined' style={styles.textInput} label={t("Village")} value={formData.village_name} onChangeText={text => setFormData(prev => ({ ...prev, village_name: text }))} />
 
-                <TextInput mode='outlined' style={styles.textInput} label="Phone Number" keyboardType="phone-pad" value={formData.phoneNumber} onChangeText={text => setFormData(prev => ({ ...prev, phoneNumber: text }))} />
+                <TextInput mode='outlined' style={styles.textInput} label={t("Phone Number")} keyboardType="phone-pad" value={formData.phoneNumber} onChangeText={text => setFormData(prev => ({ ...prev, phoneNumber: text }))} />
 
-                <TextInput mode='outlined' style={styles.textInput} label="WhatsApp Number" keyboardType="phone-pad" value={formData.whatsappNumber} onChangeText={text => setFormData(prev => ({ ...prev, whatsappNumber: text }))} />
+                <TextInput mode='outlined' style={styles.textInput} label={t("WhatsApp Number")} keyboardType="phone-pad" value={formData.whatsappNumber} onChangeText={text => setFormData(prev => ({ ...prev, whatsappNumber: text }))} />
 
 
                 <Dropdown
                     style={styles.dropdownMenu}
                     data={[
-                        { label: "Fixed Price", value: "fixed_price" },
-                        { label: "Negotiation Price", value: "negotiation_price" }
+                        { label: t("Fixed Price"), value: "fixed_price" },
+                        { label: t("Negotiation Price"), value: "negotiation_price" }
                     ]}
                     labelField="label"
                     valueField="value"
                     value={formData.pricing_preference}
-                    placeholder="Select Pricing Preference"
+                    placeholder={t("Select Pricing Preference")}
                     onChange={item => setFormData(prev => ({ ...prev, pricing_preference: item.value }))}
                 />
 
@@ -123,15 +125,15 @@ const CreateShopScreen = () => {
                 <Dropdown
                     style={styles.dropdownMenu}
                     data={[
-                        { label: "Retail Customers", value: "retail_customers" },
-                        { label: "Wholesalers", value: "wholesalers" },
-                        { label: "Restaurants", value: "restaurants" },
-                        { label: "Hotels", value: "hotels" }
+                        { label: t("Retail Customers"), value: "retail_customers" },
+                        { label: t("Wholesalers"), value: "wholesalers" },
+                        { label: t("Restaurants"), value: "restaurants" },
+                        { label: t("Hotels"), value: "hotels" }
                     ]}
                     labelField="label"
                     valueField="value"
                     value={formData.preferred_buyers}
-                    placeholder="Select Preferred Buyers"
+                    placeholder={t("Select Preferred Buyers")}
                     onChange={item => setFormData(prev => ({ ...prev, preferred_buyers: item.value }))}
                 />
 
@@ -140,12 +142,12 @@ const CreateShopScreen = () => {
                 <TextInput mode='outlined' style={styles.textInput} label="Shop Description" value={formData.shop_description} onChangeText={text => setFormData(prev => ({ ...prev, shop_description: text }))} />
 
                 {formData.shop_profile_image && <Image source={{ uri: formData.shop_profile_image }} style={styles.imagePreview} />}
-                <Button mode="outlined" onPress={() => pickImage('shop_profile_image')}>Upload Shop Profile Image</Button>
+                <Button mode="outlined" onPress={() => pickImage('shop_profile_image')}>{t("Upload Shop Profile Image")}</Button>
 
                 {formData.shop_cover_image && <Image source={{ uri: formData.shop_cover_image }} style={styles.imagePreview} />}
-                <Button mode="outlined" onPress={() => pickImage('shop_cover_image')}>Upload Shop Cover Image</Button>
+                <Button mode="outlined" onPress={() => pickImage('shop_cover_image')}>{t("Upload Shop Cover Image")}</Button>
 
-                <Button style={{ marginBottom: 60, marginTop: 20 }} mode="contained" onPress={handleSubmit}>Create Shop</Button>
+                <Button style={{ marginBottom: 60, marginTop: 20 }} mode="contained" onPress={handleSubmit}>{t("Create Shop")}</Button>
             </ScrollView>
         </KeyboardAvoidingView>
     );
